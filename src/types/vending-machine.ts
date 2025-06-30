@@ -38,7 +38,7 @@ export enum VendingStep {
   SELECT_PRODUCT = "SELECT_PRODUCT",
   SELECT_PAYMENT = "SELECT_PAYMENT",
   INSERT_PAYMENT = "INSERT_PAYMENT",
-  RETURN_CHANGE = "RETURN_CHANGE",
+  GET_PRODUCT = "GET_PRODUCT",
 }
 
 // 단계별 상태 타입
@@ -59,7 +59,7 @@ export interface InsertPaymentState {
   };
 }
 
-export interface ReturnChangeState {
+export interface GetProductState {
   change?: {
     units: Partial<Record<CashUnit, number>>;
     total: number;
@@ -72,7 +72,7 @@ export interface VendingProcessState {
   selectProduct: SelectProductState;
   selectPayment: SelectPaymentState;
   insertPayment: InsertPaymentState;
-  returnChange: ReturnChangeState;
+  getProduct: GetProductState;
 }
 
 // 자판기 재고 아이템 타입

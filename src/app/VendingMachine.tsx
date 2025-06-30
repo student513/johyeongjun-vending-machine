@@ -2,8 +2,8 @@ import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
 import { VendingStep } from "@/types/vending-machine";
 import Image from "next/image";
+import { GetProduct } from "./components/get-product";
 import { InsertPayment } from "./components/insert-payment";
-import { ReturnChange } from "./components/return-change";
 import { SelectPayment } from "./components/select-payment";
 import { SelectProduct } from "./components/select-product";
 import { StepIndicator } from "./components/step-indicator";
@@ -61,8 +61,8 @@ export const VendingMachine = () => {
         return <SelectPayment />;
       case VendingStep.INSERT_PAYMENT:
         return <InsertPayment />;
-      case VendingStep.RETURN_CHANGE:
-        return <ReturnChange />;
+      case VendingStep.GET_PRODUCT:
+        return <GetProduct />;
     }
   };
 

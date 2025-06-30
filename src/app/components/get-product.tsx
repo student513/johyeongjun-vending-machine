@@ -1,4 +1,4 @@
-export const ReturnChange = () => {
+export const GetProduct = () => {
   return (
     <div>
       <div>잔돈을 가져가주세요.</div>

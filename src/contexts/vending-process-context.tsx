@@ -7,7 +7,7 @@ const initialState: VendingProcessState = {
   selectProduct: {},
   selectPayment: {},
   insertPayment: {},
-  returnChange: {},
+  getProduct: {},
 };
 
 interface VendingProcessContextType {
