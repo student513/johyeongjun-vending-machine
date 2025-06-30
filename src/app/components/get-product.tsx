@@ -79,7 +79,10 @@ export const GetProduct = () => {
       ) : (
         <button
           className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={resetVendingProcess}
+          onClick={() => {
+            resetVendingProcess();
+            resetInsertedMoney();
+          }}
         >
           돌아가기
         </button>

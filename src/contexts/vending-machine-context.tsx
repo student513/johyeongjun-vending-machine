@@ -62,6 +62,7 @@ interface VendingMachineContextType {
   insertedMoney: Money;
   addInsertedMoney: (value: CashUnit, count: number) => void;
   getInsertedTotal: () => number;
+  returnInsertedMoney: () => void;
   resetInsertedMoney: () => void;
 }
 
@@ -337,7 +338,7 @@ export const VendingMachineProvider = ({
   };
 
   // 투입된 금액 초기화 및 환불
-  const resetInsertedMoney = () => {
+  const returnInsertedMoney = () => {
     // insertedMoney의 각 화폐 단위별로 addCash 호출
     (
       [
@@ -354,6 +355,17 @@ export const VendingMachineProvider = ({
       }
     });
 
+    setInsertedMoney({
+      tenThousand: { value: 10000, count: 0, total: 0 },
+      fiveThousand: { value: 5000, count: 0, total: 0 },
+      oneThousand: { value: 1000, count: 0, total: 0 },
+      fiveHundred: { value: 500, count: 0, total: 0 },
+      oneHundred: { value: 100, count: 0, total: 0 },
+      total: 0,
+    });
+  };
+
+  const resetInsertedMoney = () => {
     setInsertedMoney({
       tenThousand: { value: 10000, count: 0, total: 0 },
       fiveThousand: { value: 5000, count: 0, total: 0 },
@@ -388,6 +400,7 @@ export const VendingMachineProvider = ({
         insertedMoney,
         addInsertedMoney,
         getInsertedTotal,
+        returnInsertedMoney,
         resetInsertedMoney,
       }}
     >

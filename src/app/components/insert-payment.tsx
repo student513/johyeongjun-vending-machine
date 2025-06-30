@@ -9,7 +9,7 @@ export const InsertPayment = () => {
   const { addChangeMoney, addInsertedMoney, getInsertedTotal } =
     useVendingMachine();
   const { vendingProcess, setVendingProcess } = useVendingProcess();
-  const { resetInsertedMoney, decreaseProductQuantity } = useVendingMachine();
+  const { returnInsertedMoney, decreaseProductQuantity } = useVendingMachine();
   const paymentMethod = vendingProcess.selectPayment.paymentMethod;
 
   // 선택된 상품의 가격
@@ -84,7 +84,7 @@ export const InsertPayment = () => {
           <button
             className="inline-block rounded-sm border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:ring-3 focus:outline-hidden"
             onClick={() => {
-              resetInsertedMoney();
+              returnInsertedMoney();
             }}
           >
             반환
