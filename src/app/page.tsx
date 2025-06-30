@@ -1,26 +1,40 @@
+import { InventoryItem } from "@/types/vending-machine";
 import Image from "next/image";
 
 interface BeverageItemProps {
   src: string;
   alt: string;
   name: string;
-  number: number;
+  price: number;
+  quantity: number;
 }
 
-const BeverageItem = ({ src, alt, name, number }: BeverageItemProps) => (
+const BeverageItem = ({
+  src,
+  alt,
+  name,
+  price,
+  quantity,
+}: BeverageItemProps) => (
   <div className="bg-white border-2 border-solid p-4 rounded-xs flex flex-col items-center">
     <Image aria-hidden src={src} alt={alt} width={100} height={100} />
-    <div>
-      {number}.{name}
-    </div>
+    <div className="text-lg font-semibold">{name}</div>
+    <div className="text-sm text-gray-600">{price.toLocaleString()}원</div>
+    <div className="text-xs text-gray-500">재고: {quantity}개</div>
   </div>
 );
 
-const beverages = [
-  { src: "/coffee.png", alt: "Coffee icon", name: "커피", number: 11 },
-  { src: "/coke.png", alt: "Coke icon", name: "콜라", number: 12 },
-  { src: "/water.png", alt: "Water icon", name: "생수", number: 13 },
+const beverages: InventoryItem[] = [
+  { name: "커피", quantity: 10, price: 700 },
+  { name: "콜라", quantity: 15, price: 1100 },
+  { name: "생수", quantity: 20, price: 600 },
 ];
+
+const beverageImages = {
+  커피: "/coffee.png",
+  콜라: "/coke.png",
+  생수: "/water.png",
+};
 
 export default function Home() {
   return (
@@ -29,10 +43,11 @@ export default function Home() {
         {beverages.map((beverage) => (
           <BeverageItem
             key={beverage.name}
-            src={beverage.src}
-            alt={beverage.alt}
+            src={beverageImages[beverage.name as keyof typeof beverageImages]}
+            alt={`${beverage.name} icon`}
             name={beverage.name}
-            number={beverage.number}
+            price={beverage.price}
+            quantity={beverage.quantity}
           />
         ))}
       </div>
