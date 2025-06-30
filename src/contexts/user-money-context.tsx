@@ -27,6 +27,7 @@ interface UserMoneyContextType {
   // 카드 관련 함수들
   updateCardBalance: (amount: number) => void;
   getCardBalance: () => number;
+  subtractCard: (amount: number) => void;
 
   // 전체 잔액 조회
   getTotalBalance: () => number;
@@ -106,6 +107,17 @@ export const UserMoneyProvider = ({
     return userMoney.card.balance;
   };
 
+  // 카드 잔액 차감 함수
+  const subtractCard = (amount: number) => {
+    setUserMoney((prev) => ({
+      ...prev,
+      card: {
+        ...prev.card,
+        balance: Math.max(0, prev.card.balance - amount),
+      },
+    }));
+  };
+
   // 전체 잔액 조회 (현금 + 카드)
   const getTotalBalance = () => {
     return userMoney.cash.total + userMoney.card.balance;
@@ -156,6 +168,7 @@ export const UserMoneyProvider = ({
         getCardBalance,
         getTotalBalance,
         resetUserMoney,
+        subtractCard,
       }}
     >
       {children}

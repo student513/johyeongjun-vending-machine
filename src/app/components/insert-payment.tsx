@@ -2,12 +2,13 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
+import { VendingStep } from "@/types/vending-machine";
 
 export const InsertPayment = () => {
-  const { userMoney, subtractCash } = useUserMoney();
+  const { userMoney, subtractCash, subtractCard } = useUserMoney();
   const { addChangeMoney, addInsertedMoney, getInsertedTotal } =
     useVendingMachine();
-  const { vendingProcess } = useVendingProcess();
+  const { vendingProcess, setVendingProcess } = useVendingProcess();
   const { resetInsertedMoney } = useVendingMachine();
   const paymentMethod = vendingProcess.selectPayment.paymentMethod;
 
@@ -86,11 +87,42 @@ export const InsertPayment = () => {
   }
 
   if (paymentMethod === "card") {
+    const canPay = userMoney.card.balance >= productPrice;
+
     return (
       <div>
-        <div className="mb-2">카드 결제</div>
+        <div className="mb-2">카드를 투입해주세요.</div>
         <div className="mb-1">
           카드 잔액: {userMoney.card.balance.toLocaleString()}원
+        </div>
+        <div className="flex gap-4">
+          <button
+            className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!canPay}
+            onClick={() => {
+              if (!canPay) return;
+              // 카드 잔액 차감
+              subtractCard(productPrice);
+              // vendingProcess 초기화 및 step 변경
+              setVendingProcess({
+                ...vendingProcess,
+                step: VendingStep.SELECT_PRODUCT,
+              });
+            }}
+          >
+            결제
+          </button>
+          <button
+            className="inline-block rounded-sm border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:ring-3 focus:outline-hidden"
+            onClick={() => {
+              setVendingProcess({
+                ...vendingProcess,
+                step: VendingStep.SELECT_PAYMENT,
+              });
+            }}
+          >
+            돌아가기
+          </button>
         </div>
       </div>
     );
