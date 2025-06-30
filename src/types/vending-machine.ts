@@ -23,8 +23,7 @@ export interface Card {
 // 사용자 소유금 타입
 export interface UserMoney {
   cash: Money;
-  checkCard: Card;
-  creditCard: Card;
+  card: Card;
 }
 
 // 음료 상품 타입
@@ -32,7 +31,6 @@ export type ProductType = "커피" | "콜라" | "생수";
 
 // 결제수단 타입
 export type PaymentMethod = "cash" | "card";
-export type CardType = "credit" | "check";
 export type CashUnit = 100 | 500 | 1000 | 5000 | 10000;
 
 // 구매 단계 Enum
@@ -59,7 +57,6 @@ export interface InsertPaymentState {
     units: Partial<Record<CashUnit, number>>;
     total: number;
   };
-  cardType?: CardType;
 }
 
 export interface ReturnChangeState {

@@ -12,8 +12,7 @@ const initialUserMoney: UserMoney = {
     oneHundred: { value: 100, count: 5, total: 500 },
     total: 29500,
   },
-  checkCard: { balance: 50000 },
-  creditCard: { balance: 100000 },
+  card: { balance: 50000 },
 };
 
 interface UserMoneyContextType {
@@ -26,10 +25,8 @@ interface UserMoneyContextType {
   getCashTotal: () => number;
 
   // 카드 관련 함수들
-  updateCheckCardBalance: (amount: number) => void;
-  updateCreditCardBalance: (amount: number) => void;
-  getCheckCardBalance: () => number;
-  getCreditCardBalance: () => number;
+  updateCardBalance: (amount: number) => void;
+  getCardBalance: () => number;
 
   // 전체 잔액 조회
   getTotalBalance: () => number;
@@ -93,45 +90,25 @@ export const UserMoneyProvider = ({
     return userMoney.cash.total;
   };
 
-  // 체크카드 잔액 업데이트
-  const updateCheckCardBalance = (amount: number) => {
+  // 카드 잔액/한도 업데이트
+  const updateCardBalance = (amount: number) => {
     setUserMoney((prev) => ({
       ...prev,
-      checkCard: {
-        ...prev.checkCard,
-        balance: Math.max(0, prev.checkCard.balance + amount),
+      card: {
+        ...prev.card,
+        balance: Math.max(0, prev.card.balance + amount),
       },
     }));
   };
 
-  // 신용카드 잔액 업데이트
-  const updateCreditCardBalance = (amount: number) => {
-    setUserMoney((prev) => ({
-      ...prev,
-      creditCard: {
-        ...prev.creditCard,
-        balance: Math.max(0, prev.creditCard.balance + amount),
-      },
-    }));
-  };
-
-  // 체크카드 잔액 조회
-  const getCheckCardBalance = () => {
-    return userMoney.checkCard.balance;
-  };
-
-  // 신용카드 잔액 조회
-  const getCreditCardBalance = () => {
-    return userMoney.creditCard.balance;
+  // 카드 잔액 조회
+  const getCardBalance = () => {
+    return userMoney.card.balance;
   };
 
   // 전체 잔액 조회 (현금 + 카드)
   const getTotalBalance = () => {
-    return (
-      userMoney.cash.total +
-      userMoney.checkCard.balance +
-      userMoney.creditCard.balance
-    );
+    return userMoney.cash.total + userMoney.card.balance;
   };
 
   // 초기화
@@ -175,10 +152,8 @@ export const UserMoneyProvider = ({
         addCash,
         subtractCash,
         getCashTotal,
-        updateCheckCardBalance,
-        updateCreditCardBalance,
-        getCheckCardBalance,
-        getCreditCardBalance,
+        updateCardBalance,
+        getCardBalance,
         getTotalBalance,
         resetUserMoney,
       }}

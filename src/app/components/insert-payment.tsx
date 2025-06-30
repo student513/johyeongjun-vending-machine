@@ -90,11 +90,7 @@ export const InsertPayment = () => {
       <div>
         <div className="mb-2">카드 결제</div>
         <div className="mb-1">
-          체크카드 잔액: {userMoney.checkCard.balance.toLocaleString()}원
-        </div>
-        <div className="mb-1">
-          신용카드 사용가능 한도:{" "}
-          {userMoney.creditCard.balance.toLocaleString()}원
+          카드 잔액: {userMoney.card.balance.toLocaleString()}원
         </div>
       </div>
     );
