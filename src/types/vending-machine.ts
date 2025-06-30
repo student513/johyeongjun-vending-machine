@@ -27,11 +27,63 @@ export interface UserMoney {
   creditCard: Card;
 }
 
+// 음료 상품 타입
+export type ProductType = "커피" | "콜라" | "생수";
+
+// 결제수단 타입
+export type PaymentMethod = "cash" | "card";
+export type CardType = "credit" | "check";
+export type CashUnit = 100 | 500 | 1000 | 5000 | 10000;
+
+// 구매 단계 Enum
+export enum VendingStep {
+  SELECT_PRODUCT = "SELECT_PRODUCT",
+  SELECT_PAYMENT = "SELECT_PAYMENT",
+  INSERT_PAYMENT = "INSERT_PAYMENT",
+  RETURN_CHANGE = "RETURN_CHANGE",
+}
+
+// 단계별 상태 타입
+export interface SelectProductState {
+  selectedProductNumber?: number;
+  selectedProductType?: ProductType;
+  selectedProductPrice?: number;
+}
+
+export interface SelectPaymentState {
+  paymentMethod?: PaymentMethod;
+}
+
+export interface InsertPaymentState {
+  cashInserted?: {
+    units: Partial<Record<CashUnit, number>>;
+    total: number;
+  };
+  cardType?: CardType;
+}
+
+export interface ReturnChangeState {
+  change?: {
+    units: Partial<Record<CashUnit, number>>;
+    total: number;
+  };
+}
+
+// 전체 프로세스 상태
+export interface VendingProcessState {
+  step: VendingStep;
+  selectProduct: SelectProductState;
+  selectPayment: SelectPaymentState;
+  insertPayment: InsertPaymentState;
+  returnChange: ReturnChangeState;
+}
+
 // 자판기 재고 아이템 타입
 export interface InventoryItem {
-  name: string;
+  name: ProductType;
   quantity: number;
   price: number;
+  number: number;
 }
 
 // 자판기 타입
@@ -124,9 +176,9 @@ export const initialUserMoney: UserMoney = {
 
 export const initialVendingMachine: VendingMachine = {
   inventory: [
-    { name: "커피", quantity: 10, price: 700 },
-    { name: "콜라", quantity: 15, price: 1100 },
-    { name: "생수", quantity: 20, price: 600 },
+    { name: "커피", quantity: 10, price: 700, number: 11 },
+    { name: "콜라", quantity: 15, price: 1100, number: 12 },
+    { name: "생수", quantity: 20, price: 600, number: 13 },
   ],
   changeMoney: {
     tenThousand: { value: 10000, count: 5, total: 50000 },

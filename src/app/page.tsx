@@ -7,6 +7,7 @@ interface BeverageItemProps {
   name: string;
   price: number;
   quantity: number;
+  number: number;
 }
 
 const BeverageItem = ({
@@ -15,19 +16,22 @@ const BeverageItem = ({
   name,
   price,
   quantity,
+  number,
 }: BeverageItemProps) => (
   <div className="bg-white border-2 border-solid p-4 rounded-xs flex flex-col items-center">
     <Image aria-hidden src={src} alt={alt} width={100} height={100} />
-    <div className="text-lg font-semibold">{name}</div>
+    <div className="text-lg font-semibold">
+      {number}.{name}
+    </div>
     <div className="text-sm text-gray-600">{price.toLocaleString()}원</div>
     <div className="text-xs text-gray-500">재고: {quantity}개</div>
   </div>
 );
 
 const beverages: InventoryItem[] = [
-  { name: "커피", quantity: 10, price: 700 },
-  { name: "콜라", quantity: 15, price: 1100 },
-  { name: "생수", quantity: 20, price: 600 },
+  { name: "커피", quantity: 10, price: 700, number: 11 },
+  { name: "콜라", quantity: 15, price: 1100, number: 12 },
+  { name: "생수", quantity: 20, price: 600, number: 13 },
 ];
 
 const beverageImages = {
@@ -48,6 +52,7 @@ export default function Home() {
             name={beverage.name}
             price={beverage.price}
             quantity={beverage.quantity}
+            number={beverage.number}
           />
         ))}
       </div>
@@ -55,12 +60,7 @@ export default function Home() {
         {/* 단계별 안내 메세지 */}
         구매하실 상품의 번호를 입력해주세요.
       </div>
-      <div className="flex justify-center items-center bg-gray-200">
-        <div>상품 선택: </div>
-        <input type="number" />
-        <button>선택</button>
-        <button>취소</button>
-      </div>
+
       <div className="bg-gray-200">
         <div>결제 수단 선택</div>
         <button>현금</button>
