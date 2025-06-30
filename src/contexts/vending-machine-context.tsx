@@ -1,4 +1,5 @@
 "use client";
+import { useUserMoney } from "@/contexts/user-money-context";
 import {
   CashUnit,
   InventoryItem,
@@ -56,6 +57,12 @@ interface VendingMachineContextType {
   resetVendingMachine: () => void;
   refillInventory: () => void;
   refillChangeMoney: () => void;
+
+  // 투입된 금액 관련 함수들
+  insertedMoney: Money;
+  addInsertedMoney: (value: CashUnit, count: number) => void;
+  getInsertedTotal: () => number;
+  resetInsertedMoney: () => void;
 }
 
 const VendingMachineContext = createContext<
@@ -70,6 +77,19 @@ export const VendingMachineProvider = ({
   const [vendingMachine, setVendingMachine] = useState<VendingMachine>(
     initialVendingMachine
   );
+
+  // 투입된 금액 상태
+  const [insertedMoney, setInsertedMoney] = useState<Money>({
+    tenThousand: { value: 10000, count: 0, total: 0 },
+    fiveThousand: { value: 5000, count: 0, total: 0 },
+    oneThousand: { value: 1000, count: 0, total: 0 },
+    fiveHundred: { value: 500, count: 0, total: 0 },
+    oneHundred: { value: 100, count: 0, total: 0 },
+    total: 0,
+  });
+
+  // userMoney context 사용
+  const { addCash } = useUserMoney();
 
   // 재고 조회
   const getInventory = () => {
@@ -294,6 +314,56 @@ export const VendingMachineProvider = ({
     }, 0);
   };
 
+  // 투입된 금액 추가
+  const addInsertedMoney = (value: CashUnit, count: number) => {
+    setInsertedMoney((prev) => {
+      const newInsertedMoney = { ...prev };
+      const key = getMoneyKey(value);
+      newInsertedMoney[key] = {
+        ...newInsertedMoney[key],
+        count: newInsertedMoney[key].count + count,
+        total:
+          newInsertedMoney[key].value * (newInsertedMoney[key].count + count),
+      };
+      newInsertedMoney.total = calculateTotal(newInsertedMoney);
+
+      return newInsertedMoney;
+    });
+  };
+
+  // 투입된 금액 총액 조회
+  const getInsertedTotal = () => {
+    return insertedMoney.total;
+  };
+
+  // 투입된 금액 초기화 및 환불
+  const resetInsertedMoney = () => {
+    // insertedMoney의 각 화폐 단위별로 addCash 호출
+    (
+      [
+        { key: "tenThousand", value: 10000 },
+        { key: "fiveThousand", value: 5000 },
+        { key: "oneThousand", value: 1000 },
+        { key: "fiveHundred", value: 500 },
+        { key: "oneHundred", value: 100 },
+      ] as const
+    ).forEach((unit) => {
+      const count = insertedMoney[unit.key].count;
+      if (count > 0) {
+        addCash(unit.value, count);
+      }
+    });
+
+    setInsertedMoney({
+      tenThousand: { value: 10000, count: 0, total: 0 },
+      fiveThousand: { value: 5000, count: 0, total: 0 },
+      oneThousand: { value: 1000, count: 0, total: 0 },
+      fiveHundred: { value: 500, count: 0, total: 0 },
+      oneHundred: { value: 100, count: 0, total: 0 },
+      total: 0,
+    });
+  };
+
   return (
     <VendingMachineContext.Provider
       value={{
@@ -315,6 +385,10 @@ export const VendingMachineProvider = ({
         resetVendingMachine,
         refillInventory,
         refillChangeMoney,
+        insertedMoney,
+        addInsertedMoney,
+        getInsertedTotal,
+        resetInsertedMoney,
       }}
     >
       {children}
