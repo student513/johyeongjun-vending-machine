@@ -1,3 +1,4 @@
+"use client";
 import { VendingProcessState, VendingStep } from "@/types/vending-machine";
 import React, { createContext, useContext, useState } from "react";
 

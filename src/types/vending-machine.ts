@@ -92,15 +92,6 @@ export interface VendingMachine {
   changeMoney: Money; // 거스름돈
 }
 
-// 전체 시스템 상태 타입
-export interface VendingMachineState {
-  userMoney: UserMoney;
-  vendingMachine: VendingMachine;
-  selectedBeverage: string | null;
-  isProcessing: boolean;
-  message: string;
-}
-
 // 화폐 가치에 따른 키 반환 함수
 export const getMoneyKey = (value: number): keyof Omit<Money, "total"> => {
   switch (value) {
@@ -189,3 +180,9 @@ export const initialVendingMachine: VendingMachine = {
     total: 140000,
   },
 };
+
+export const beverages: InventoryItem[] = [
+  { name: "커피", quantity: 10, price: 700, number: 11 },
+  { name: "콜라", quantity: 15, price: 1100, number: 12 },
+  { name: "생수", quantity: 20, price: 600, number: 13 },
+];
