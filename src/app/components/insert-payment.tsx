@@ -9,7 +9,7 @@ export const InsertPayment = () => {
   const { addChangeMoney, addInsertedMoney, getInsertedTotal } =
     useVendingMachine();
   const { vendingProcess, setVendingProcess } = useVendingProcess();
-  const { resetInsertedMoney } = useVendingMachine();
+  const { resetInsertedMoney, decreaseProductQuantity } = useVendingMachine();
   const paymentMethod = vendingProcess.selectPayment.paymentMethod;
 
   // 선택된 상품의 가격
@@ -68,7 +68,15 @@ export const InsertPayment = () => {
             className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isOverPrice}
             onClick={() => {
-              resetInsertedMoney();
+              setVendingProcess({
+                ...vendingProcess,
+                step: VendingStep.GET_PRODUCT,
+              });
+              if (vendingProcess.selectProduct.selectedProductNumber) {
+                decreaseProductQuantity(
+                  vendingProcess.selectProduct.selectedProductNumber
+                );
+              }
             }}
           >
             결제
@@ -106,8 +114,13 @@ export const InsertPayment = () => {
               // vendingProcess 초기화 및 step 변경
               setVendingProcess({
                 ...vendingProcess,
-                step: VendingStep.SELECT_PRODUCT,
+                step: VendingStep.GET_PRODUCT,
               });
+              if (vendingProcess.selectProduct.selectedProductNumber) {
+                decreaseProductQuantity(
+                  vendingProcess.selectProduct.selectedProductNumber
+                );
+              }
             }}
           >
             결제

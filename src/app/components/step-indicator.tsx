@@ -5,7 +5,7 @@ const steps = [
   { step: VendingStep.SELECT_PRODUCT, label: "상품 선택" },
   { step: VendingStep.SELECT_PAYMENT, label: "결제 수단 선택" },
   { step: VendingStep.INSERT_PAYMENT, label: "결제" },
-  { step: VendingStep.GET_PRODUCT, label: "물품 수령" },
+  { step: VendingStep.GET_PRODUCT, label: "상품 수령" },
 ];
 
 export const StepIndicator = () => {
