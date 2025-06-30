@@ -15,6 +15,7 @@ interface BeverageItemProps {
   price: number;
   quantity: number;
   number: number;
+  isSelected?: boolean;
 }
 
 const BeverageItem = ({
@@ -24,8 +25,12 @@ const BeverageItem = ({
   price,
   quantity,
   number,
+  isSelected = false,
 }: BeverageItemProps) => (
-  <div className="bg-white border-2 border-solid p-4 rounded-xs flex flex-col items-center">
+  <div
+    className={`bg-white border-2 border-solid p-4 rounded-xs flex flex-col items-center
+      ${isSelected ? "border-red-400" : "border-gray-200"}`}
+  >
     <Image aria-hidden src={src} alt={alt} width={100} height={100} />
     <div className="text-lg font-semibold">
       {number}.{name}
@@ -45,6 +50,9 @@ export const VendingMachine = () => {
   const { vendingProcess } = useVendingProcess();
   const { vendingMachine } = useVendingMachine();
 
+  const selectedBeverageNumber =
+    vendingProcess.selectProduct.selectedProductNumber;
+
   const renderStep = () => {
     switch (vendingProcess.step) {
       case VendingStep.SELECT_PRODUCT:
@@ -56,18 +64,6 @@ export const VendingMachine = () => {
       case VendingStep.RETURN_CHANGE:
         return <ReturnChange />;
     }
-  };
-
-  const renderSelectedProduct = () => {
-    if (vendingProcess.selectProduct.selectedProductNumber) {
-      return (
-        <div>
-          {vendingProcess.selectProduct.selectedProductType}:
-          {vendingProcess.selectProduct.selectedProductPrice}원
-        </div>
-      );
-    }
-    return null;
   };
 
   return (
@@ -83,10 +79,10 @@ export const VendingMachine = () => {
             price={beverage.price}
             quantity={beverage.quantity}
             number={beverage.number}
+            isSelected={beverage.number === selectedBeverageNumber}
           />
         ))}
       </div>
-      <div>{renderSelectedProduct()}</div>
       <div>{renderStep()}</div>
     </div>
   );
