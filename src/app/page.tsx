@@ -1,12 +1,12 @@
 "use client";
 
-import { VendingProcessProvider } from "@/contexts/vending-process-context";
+import { AppProvider } from "@/contexts";
 import { VendingMachine } from "./VendingMachine";
 
 export default function Home() {
   return (
-    <VendingProcessProvider>
+    <AppProvider>
       <VendingMachine />
-    </VendingProcessProvider>
+    </AppProvider>
   );
 }

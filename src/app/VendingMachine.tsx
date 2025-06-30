@@ -1,5 +1,6 @@
+import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
-import { beverages, VendingStep } from "@/types/vending-machine";
+import { VendingStep } from "@/types/vending-machine";
 import Image from "next/image";
 import { InsertPayment } from "./components/insert-payment";
 import { ReturnChange } from "./components/return-change";
@@ -41,6 +42,7 @@ const beverageImages = {
 
 export const VendingMachine = () => {
   const { vendingProcess } = useVendingProcess();
+  const { vendingMachine } = useVendingMachine();
 
   const renderStep = () => {
     switch (vendingProcess.step) {
@@ -70,10 +72,22 @@ export const VendingMachine = () => {
     }
   };
 
+  const renderSelectedProduct = () => {
+    if (vendingProcess.selectProduct.selectedProductNumber) {
+      return (
+        <div>
+          {vendingProcess.selectProduct.selectedProductType}:
+          {vendingProcess.selectProduct.selectedProductPrice}원
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div>
+    <div className="flex flex-col items-center gap-4">
       <div className="flex justify-center items-center gap-4">
-        {beverages.map((beverage) => (
+        {vendingMachine.inventory.map((beverage) => (
           <BeverageItem
             key={beverage.name}
             src={beverageImages[beverage.name as keyof typeof beverageImages]}
@@ -86,6 +100,7 @@ export const VendingMachine = () => {
         ))}
       </div>
       <div>{renderMessage()}</div>
+      <div>{renderSelectedProduct()}</div>
       <div>{renderStep()}</div>
     </div>
   );

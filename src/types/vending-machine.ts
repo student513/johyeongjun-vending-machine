@@ -150,39 +150,3 @@ export const subtractMoney = (
   updatedMoney.total = calculateTotal(updatedMoney);
   return updatedMoney;
 };
-
-// 초기 데이터
-export const initialUserMoney: UserMoney = {
-  cash: {
-    tenThousand: { value: 10000, count: 2, total: 20000 },
-    fiveThousand: { value: 5000, count: 1, total: 5000 },
-    oneThousand: { value: 1000, count: 3, total: 3000 },
-    fiveHundred: { value: 500, count: 2, total: 1000 },
-    oneHundred: { value: 100, count: 5, total: 500 },
-    total: 29500,
-  },
-  checkCard: { balance: 50000 },
-  creditCard: { balance: 100000 },
-};
-
-export const initialVendingMachine: VendingMachine = {
-  inventory: [
-    { name: "커피", quantity: 10, price: 700, number: 11 },
-    { name: "콜라", quantity: 15, price: 1100, number: 12 },
-    { name: "생수", quantity: 20, price: 600, number: 13 },
-  ],
-  changeMoney: {
-    tenThousand: { value: 10000, count: 5, total: 50000 },
-    fiveThousand: { value: 5000, count: 10, total: 50000 },
-    oneThousand: { value: 1000, count: 20, total: 20000 },
-    fiveHundred: { value: 500, count: 30, total: 15000 },
-    oneHundred: { value: 100, count: 50, total: 5000 },
-    total: 140000,
-  },
-};
-
-export const beverages: InventoryItem[] = [
-  { name: "커피", quantity: 10, price: 700, number: 11 },
-  { name: "콜라", quantity: 15, price: 1100, number: 12 },
-  { name: "생수", quantity: 20, price: 600, number: 13 },
-];

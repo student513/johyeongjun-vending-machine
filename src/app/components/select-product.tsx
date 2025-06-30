@@ -1,25 +1,32 @@
 "use client";
+import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
-import { beverages, VendingStep } from "@/types/vending-machine";
+import { VendingStep } from "@/types/vending-machine";
 import { useState } from "react";
 
 export const SelectProduct = () => {
   const { setVendingProcess } = useVendingProcess();
+  const { vendingMachine } = useVendingMachine();
   const [productNumber, setProductNumber] = useState<number>();
 
   const handleSelectProduct = () => {
-    const selectedProduct = beverages.find(
+    const selectedProduct = vendingMachine.inventory.find(
       (beverage) => beverage.number === productNumber
     );
 
     if (!selectedProduct) {
-      // TODO: 상품 선택 실패 메시지 출력
+      alert("존재하지 않는 상품입니다.");
       return;
     }
 
     setVendingProcess((prev) => ({
       ...prev,
       step: VendingStep.SELECT_PAYMENT,
+      selectProduct: {
+        selectedProductNumber: selectedProduct.number,
+        selectedProductType: selectedProduct.name,
+        selectedProductPrice: selectedProduct.price,
+      },
     }));
   };
 
