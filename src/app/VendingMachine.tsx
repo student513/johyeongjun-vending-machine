@@ -58,21 +58,6 @@ export const VendingMachine = () => {
     }
   };
 
-  const renderMessage = () => {
-    switch (vendingProcess.step) {
-      case VendingStep.SELECT_PRODUCT:
-        return "구매하실 상품의 번호를 입력해주세요.";
-      case VendingStep.SELECT_PAYMENT:
-        return "결제 수단을 선택해주세요.";
-      case VendingStep.INSERT_PAYMENT:
-        return "금액을 투입해주세요.";
-      case VendingStep.RETURN_CHANGE:
-        return "잔돈을 가져가주세요.";
-      default:
-        return "";
-    }
-  };
-
   const renderSelectedProduct = () => {
     if (vendingProcess.selectProduct.selectedProductNumber) {
       return (
@@ -101,7 +86,6 @@ export const VendingMachine = () => {
           />
         ))}
       </div>
-      <div>{renderMessage()}</div>
       <div>{renderSelectedProduct()}</div>
       <div>{renderStep()}</div>
     </div>

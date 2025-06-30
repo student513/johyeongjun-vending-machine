@@ -1,6 +1,7 @@
 export const InsertPayment = () => {
   return (
     <div>
+      <div>금액을 투입해주세요.</div>
       <div className="bg-red-200">
         <div>현금 투입</div>
         <div>가격: 1000원</div>
