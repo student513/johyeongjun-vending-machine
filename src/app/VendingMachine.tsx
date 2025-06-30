@@ -6,6 +6,7 @@ import { InsertPayment } from "./components/insert-payment";
 import { ReturnChange } from "./components/return-change";
 import { SelectPayment } from "./components/select-payment";
 import { SelectProduct } from "./components/select-product";
+import { StepIndicator } from "./components/step-indicator";
 
 interface BeverageItemProps {
   src: string;
@@ -86,6 +87,7 @@ export const VendingMachine = () => {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <StepIndicator />
       <div className="flex justify-center items-center gap-4">
         {vendingMachine.inventory.map((beverage) => (
           <BeverageItem
