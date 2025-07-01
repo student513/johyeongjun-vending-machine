@@ -3,6 +3,7 @@ import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
 import { CASH_UNITS, ERROR_MESSAGES } from "@/lib/constants";
+import { getOptimalCashInsert } from "@/lib/utils";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
 import { Button } from "./ui/button";
 
@@ -33,6 +34,38 @@ export const InsertPayment = () => {
       // 사용자의 현금 차감 및 자판기의 투입된 금액 증가
       subtractCash(value, 1);
       addInsertedMoney(value, 1);
+    };
+
+    // 최적화된 현금 투입 핸들러
+    const handleClickOptimalInsert = () => {
+      const cashTotal = Object.values(userMoney.cash)
+        .filter(
+          (v): v is { total: number } =>
+            typeof v === "object" && v !== null && "total" in v
+        )
+        .reduce((sum, v) => sum + (v.total ?? 0), 0);
+      if (cashTotal < productPrice) {
+        alert(
+          `현금이 부족합니다. 보유 현금: ${cashTotal.toLocaleString()}원, 상품 가격: ${productPrice.toLocaleString()}원`
+        );
+        return;
+      }
+      const optimal = getOptimalCashInsert(productPrice, userMoney.cash);
+      // getOptimalCashInsert가 null을 반환하는 경우는 이론상 cashTotal < productPrice에서 이미 걸러짐
+      if (!optimal) return;
+      // 각 화폐 단위별로 차감/추가
+      Object.entries(optimal.insert).forEach(([key, count]) => {
+        if (count > 0) {
+          subtractCash(
+            CASH_UNITS.find((u) => u.key === key)!.value as CashUnit,
+            count
+          );
+          addInsertedMoney(
+            CASH_UNITS.find((u) => u.key === key)!.value as CashUnit,
+            count
+          );
+        }
+      });
     };
 
     const handleClickCashPay = () => {
@@ -94,6 +127,15 @@ export const InsertPayment = () => {
               </Button>
             </div>
           ))}
+          <Button
+            variant="secondary"
+            size="sm"
+            className="mt-2"
+            disabled={isOverPrice || productPrice === 0}
+            onClick={handleClickOptimalInsert}
+          >
+            최적 투입
+          </Button>
         </div>
         {isOverPrice && (
           <div className="text-red-500 text-sm mt-2">
