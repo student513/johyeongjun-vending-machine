@@ -8,14 +8,12 @@ interface MoneyInputGroupProps {
     count: number;
   }>;
   onUpdate: (value: number, newCount: number) => void;
-  buttonVariant?: "primary" | "secondary" | "action" | "success";
   className?: string;
 }
 
 export const MoneyInputGroup: React.FC<MoneyInputGroupProps> = ({
   moneyUnits,
   onUpdate,
-  buttonVariant = "action",
   className,
 }) => {
   return (
@@ -28,9 +26,6 @@ export const MoneyInputGroup: React.FC<MoneyInputGroupProps> = ({
           label={label}
           value={count}
           onChange={(newCount) => onUpdate(value, newCount)}
-          onButtonClick={() => onUpdate(value, count)}
-          buttonText="수정"
-          buttonVariant={buttonVariant}
         />
       ))}
     </div>

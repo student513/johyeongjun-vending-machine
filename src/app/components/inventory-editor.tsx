@@ -142,7 +142,6 @@ export default function InventoryEditor() {
         <ProductInputGroup
           products={products}
           onUpdate={handleInventoryUpdate}
-          buttonVariant="action"
         />
       </div>
 
@@ -152,7 +151,6 @@ export default function InventoryEditor() {
         <MoneyInputGroup
           moneyUnits={moneyUnits}
           onUpdate={handleChangeUpdate}
-          buttonVariant="success"
         />
       </div>
     </div>

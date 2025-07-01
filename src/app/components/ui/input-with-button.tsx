@@ -6,8 +6,8 @@ interface InputWithButtonProps {
   label: string;
   value: number;
   onChange: (value: number) => void;
-  onButtonClick: () => void;
-  buttonText: string;
+  onButtonClick?: () => void;
+  buttonText?: string;
   buttonVariant?: "primary" | "secondary" | "action" | "success";
   buttonSize?: "sm" | "md" | "lg";
   min?: number;
@@ -47,14 +47,16 @@ export const InputWithButton: React.FC<InputWithButtonProps> = ({
           disabled={disabled}
           className="flex-1"
         />
-        <Button
-          variant={buttonVariant}
-          size={buttonSize}
-          onClick={onButtonClick}
-          disabled={disabled}
-        >
-          {buttonText}
-        </Button>
+        {buttonText && onButtonClick && (
+          <Button
+            variant={buttonVariant}
+            size={buttonSize}
+            onClick={onButtonClick}
+            disabled={disabled}
+          >
+            {buttonText}
+          </Button>
+        )}
       </div>
     </div>
   );

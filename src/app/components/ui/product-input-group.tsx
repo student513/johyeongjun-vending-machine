@@ -10,14 +10,12 @@ interface Product {
 interface ProductInputGroupProps {
   products: Product[];
   onUpdate: (productName: string, newQuantity: number) => void;
-  buttonVariant?: "primary" | "secondary" | "action" | "success";
   className?: string;
 }
 
 export const ProductInputGroup: React.FC<ProductInputGroupProps> = ({
   products,
   onUpdate,
-  buttonVariant = "action",
   className,
 }) => {
   return (
@@ -28,9 +26,6 @@ export const ProductInputGroup: React.FC<ProductInputGroupProps> = ({
           label={`${name} (${price.toLocaleString()}원)`}
           value={quantity}
           onChange={(newQuantity) => onUpdate(name, newQuantity)}
-          onButtonClick={() => onUpdate(name, quantity)}
-          buttonText="수정"
-          buttonVariant={buttonVariant}
         />
       ))}
     </div>

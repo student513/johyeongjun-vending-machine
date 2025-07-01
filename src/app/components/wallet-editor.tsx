@@ -39,10 +39,13 @@ export default function WalletEditor() {
     }));
   };
 
-  // 카드 잔고 업데이트
-  const handleCardBalanceUpdate = () => {
-    const difference = cardBalance - userMoney.card.balance;
-    updateCardBalance(difference);
+  // 카드 잔고 업데이트 (입력값이 바뀔 때마다 바로 반영)
+  const handleCardBalanceChange = (newBalance: number) => {
+    setCardBalance(newBalance);
+    const difference = newBalance - userMoney.card.balance;
+    if (difference !== 0) {
+      updateCardBalance(difference);
+    }
   };
 
   // 화폐 키 반환 함수
@@ -101,11 +104,7 @@ export default function WalletEditor() {
       {/* 현금 관리 */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-4 text-gray-700">보유 현금</h3>
-        <MoneyInputGroup
-          moneyUnits={moneyUnits}
-          onUpdate={handleCashUpdate}
-          buttonVariant="action"
-        />
+        <MoneyInputGroup moneyUnits={moneyUnits} onUpdate={handleCashUpdate} />
 
         {/* 현금 총액 표시 */}
         <div className="mt-4 p-3 bg-gray-50 rounded-md">
@@ -125,10 +124,7 @@ export default function WalletEditor() {
           <InputWithButton
             label="카드 잔고 (원)"
             value={cardBalance}
-            onChange={setCardBalance}
-            onButtonClick={handleCardBalanceUpdate}
-            buttonText="수정"
-            buttonVariant="success"
+            onChange={handleCardBalanceChange}
           />
         </div>
 
