@@ -2,12 +2,17 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
-import { VendingStep } from "@/types/vending-machine";
+import { CashUnit, VendingStep } from "@/types/vending-machine";
 
 export const InsertPayment = () => {
   const { userMoney, subtractCash, subtractCard } = useUserMoney();
-  const { addChangeMoney, addInsertedMoney, getInsertedTotal } =
-    useVendingMachine();
+  const {
+    addInsertedMoney,
+    getInsertedTotal,
+    addChangeMoney,
+    resetInsertedMoney,
+    insertedMoney,
+  } = useVendingMachine();
   const { vendingProcess, setVendingProcess } = useVendingProcess();
   const { returnInsertedMoney, decreaseProductQuantity } = useVendingMachine();
   const paymentMethod = vendingProcess.selectPayment.paymentMethod;
@@ -31,6 +36,43 @@ export const InsertPayment = () => {
       { key: "oneHundred", value: 100 },
     ] as const;
 
+    const handleClickInsert = (value: CashUnit) => {
+      subtractCash(value, 1);
+      addInsertedMoney(value, 1);
+    };
+
+    const handleClickCashPay = () => {
+      // 투입된 금액을 자판기의 거스름돈에 추가
+      const cashUnits = [
+        { key: "tenThousand", value: 10000 },
+        { key: "fiveThousand", value: 5000 },
+        { key: "oneThousand", value: 1000 },
+        { key: "fiveHundred", value: 500 },
+        { key: "oneHundred", value: 100 },
+      ] as const;
+
+      cashUnits.forEach((unit) => {
+        const count = insertedMoney[unit.key].count;
+        if (count > 0) {
+          addChangeMoney(unit.value as CashUnit, count);
+        }
+      });
+
+      // 투입된 금액 초기화
+      resetInsertedMoney();
+
+      // 다음 단계 진입
+      setVendingProcess({
+        ...vendingProcess,
+        step: VendingStep.GET_PRODUCT,
+      });
+      // 상품 수량 감소
+      if (vendingProcess.selectProduct.selectedProductNumber) {
+        decreaseProductQuantity(
+          vendingProcess.selectProduct.selectedProductNumber
+        );
+      }
+    };
     return (
       <div className="flex flex-col items-center gap-4">
         <div className="mb-2">현금을 투입해주세요.</div>
@@ -47,11 +89,7 @@ export const InsertPayment = () => {
               <button
                 className="bg-yellow-200 px-2 py-1 rounded disabled:opacity-50"
                 disabled={userMoney.cash[unit.key].count === 0 || isOverPrice}
-                onClick={() => {
-                  subtractCash(unit.value, 1);
-                  addChangeMoney(unit.value, 1);
-                  addInsertedMoney(unit.value, 1);
-                }}
+                onClick={() => handleClickInsert(unit.value as CashUnit)}
               >
                 투입
               </button>
@@ -67,25 +105,13 @@ export const InsertPayment = () => {
           <button
             className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isOverPrice}
-            onClick={() => {
-              setVendingProcess({
-                ...vendingProcess,
-                step: VendingStep.GET_PRODUCT,
-              });
-              if (vendingProcess.selectProduct.selectedProductNumber) {
-                decreaseProductQuantity(
-                  vendingProcess.selectProduct.selectedProductNumber
-                );
-              }
-            }}
+            onClick={handleClickCashPay}
           >
             결제
           </button>
           <button
             className="inline-block rounded-sm border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:ring-3 focus:outline-hidden"
-            onClick={() => {
-              returnInsertedMoney();
-            }}
+            onClick={() => returnInsertedMoney()}
           >
             반환
           </button>
