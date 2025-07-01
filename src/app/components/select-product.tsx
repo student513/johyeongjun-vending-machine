@@ -4,6 +4,7 @@ import { useVendingProcess } from "@/contexts/vending-process-context";
 import { VendingStep } from "@/types/vending-machine";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 export const SelectProduct = () => {
   const { setVendingProcess } = useVendingProcess();
@@ -102,26 +103,20 @@ export const SelectProduct = () => {
         placeholder="상품 번호 입력"
       />
       <div className="flex gap-4">
-        <button
-          className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+        <Button
+          variant="primary"
           onClick={handleSelectProduct}
           disabled={!productNumber}
         >
           선택
-        </button>
-        <button
-          className="inline-block rounded-sm border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:ring-3 focus:outline-hidden"
-          onClick={handleCancel}
-        >
+        </Button>
+        <Button variant="secondary" onClick={handleCancel}>
           취소
-        </button>
+        </Button>
       </div>
-      <button
-        className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden"
-        onClick={handleAdminMode}
-      >
+      <Button variant="primary" onClick={handleAdminMode}>
         관리자 모드
-      </button>
+      </Button>
     </div>
   );
 };

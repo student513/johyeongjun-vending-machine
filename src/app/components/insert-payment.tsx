@@ -3,6 +3,7 @@ import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
+import { Button } from "./ui/button";
 
 export const InsertPayment = () => {
   const { userMoney, subtractCash, subtractCard } = useUserMoney();
@@ -92,13 +93,14 @@ export const InsertPayment = () => {
               <span>
                 {unit.value}원 x {userMoney.cash[unit.key].count}
               </span>
-              <button
-                className="bg-yellow-200 px-2 py-1 rounded disabled:opacity-50"
+              <Button
+                variant="action"
+                size="sm"
                 disabled={userMoney.cash[unit.key].count === 0 || isOverPrice}
                 onClick={() => handleClickInsert(unit.value as CashUnit)}
               >
                 투입
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -108,19 +110,16 @@ export const InsertPayment = () => {
           </div>
         )}
         <div className="flex gap-4">
-          <button
-            className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+          <Button
+            variant="primary"
             disabled={!isOverPrice}
             onClick={handleClickCashPay}
           >
             결제
-          </button>
-          <button
-            className="inline-block rounded-sm border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:ring-3 focus:outline-hidden"
-            onClick={() => returnInsertedMoney()}
-          >
+          </Button>
+          <Button variant="secondary" onClick={() => returnInsertedMoney()}>
             반환
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -156,13 +155,13 @@ export const InsertPayment = () => {
           카드 잔액: {userMoney.card.balance.toLocaleString()}원
         </div>
         <div className="flex gap-4">
-          <button
-            className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+          <Button
+            variant="primary"
             disabled={!canPay}
             onClick={handleClickCardPay}
           >
             결제
-          </button>
+          </Button>
         </div>
       </div>
     );

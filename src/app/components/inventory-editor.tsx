@@ -2,6 +2,7 @@
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { CashUnit } from "@/types/vending-machine";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 export default function InventoryEditor() {
   const {
@@ -115,14 +116,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="action"
+                size="md"
                 onClick={() =>
                   handleInventoryUpdate("커피", inventoryInputs.coffee)
                 }
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -144,14 +146,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="action"
+                size="md"
                 onClick={() =>
                   handleInventoryUpdate("콜라", inventoryInputs.coke)
                 }
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -173,14 +176,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="action"
+                size="md"
                 onClick={() =>
                   handleInventoryUpdate("생수", inventoryInputs.water)
                 }
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -208,14 +212,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="success"
+                size="md"
                 onClick={() =>
                   handleChangeUpdate(10000, changeInputs.tenThousand)
                 }
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -235,14 +240,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="success"
+                size="md"
                 onClick={() =>
                   handleChangeUpdate(5000, changeInputs.fiveThousand)
                 }
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -262,14 +268,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="success"
+                size="md"
                 onClick={() =>
                   handleChangeUpdate(1000, changeInputs.oneThousand)
                 }
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -289,14 +296,15 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="success"
+                size="md"
                 onClick={() =>
                   handleChangeUpdate(500, changeInputs.fiveHundred)
                 }
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -316,12 +324,13 @@ export default function InventoryEditor() {
                 }
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button
+              <Button
+                variant="success"
+                size="md"
                 onClick={() => handleChangeUpdate(100, changeInputs.oneHundred)}
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 수정
-              </button>
+              </Button>
             </div>
           </div>
         </div>
