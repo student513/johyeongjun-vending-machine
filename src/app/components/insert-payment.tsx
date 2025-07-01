@@ -123,6 +123,22 @@ export const InsertPayment = () => {
   if (paymentMethod === "card") {
     const canPay = userMoney.card.balance >= productPrice;
 
+    const handleClickCardPay = () => {
+      if (!canPay) return;
+      // 카드 잔액 차감
+      subtractCard(productPrice);
+      // vendingProcess 초기화 및 step 변경
+      setVendingProcess({
+        ...vendingProcess,
+        step: VendingStep.GET_PRODUCT,
+      });
+      if (vendingProcess.selectProduct.selectedProductNumber) {
+        decreaseProductQuantity(
+          vendingProcess.selectProduct.selectedProductNumber
+        );
+      }
+    };
+
     return (
       <div>
         <div className="mb-2">카드를 투입해주세요.</div>
@@ -133,21 +149,7 @@ export const InsertPayment = () => {
           <button
             className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!canPay}
-            onClick={() => {
-              if (!canPay) return;
-              // 카드 잔액 차감
-              subtractCard(productPrice);
-              // vendingProcess 초기화 및 step 변경
-              setVendingProcess({
-                ...vendingProcess,
-                step: VendingStep.GET_PRODUCT,
-              });
-              if (vendingProcess.selectProduct.selectedProductNumber) {
-                decreaseProductQuantity(
-                  vendingProcess.selectProduct.selectedProductNumber
-                );
-              }
-            }}
+            onClick={handleClickCardPay}
           >
             결제
           </button>
