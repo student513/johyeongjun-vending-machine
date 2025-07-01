@@ -1,5 +1,8 @@
 # 자판기 시뮬레이터 (Vending Machine Simulator)
 
+<img width="2888" alt="Untitled" src="https://github.com/user-attachments/assets/afcf9d23-d6b8-4a11-bd63-97524a61b0b6" />
+
+
 ## 프로젝트 개요
 
 이 프로젝트는 자판기에서 사용자가 원하는 음료수를 얻기까지의 전체 과정을 웹 애플리케이션으로 구현한 시뮬레이터입니다. 현금/카드 결제, 다양한 음료 선택, 예외 상황 처리 등 실제 자판기의 동작을 최대한 반영하였습니다.
