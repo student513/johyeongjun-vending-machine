@@ -1,6 +1,6 @@
 # 자판기 시뮬레이터 (Vending Machine Simulator)
 
-<img width="2888" alt="Untitled" src="https://github.com/user-attachments/assets/afcf9d23-d6b8-4a11-bd63-97524a61b0b6" />
+<img width="2888" alt="Untitled" src="https://github.com/user-attachments/assets/ce58f3f9-005b-431a-8e6b-f49e6705425d" />
 
 
 ## 프로젝트 개요
