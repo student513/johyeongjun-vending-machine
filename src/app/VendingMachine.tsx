@@ -67,23 +67,34 @@ export const VendingMachine = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 h-screen">
       <StepIndicator />
-      <div className="flex justify-center items-center gap-4">
-        {vendingMachine.inventory.map((beverage) => (
-          <BeverageItem
-            key={beverage.name}
-            src={beverageImages[beverage.name as keyof typeof beverageImages]}
-            alt={`${beverage.name} icon`}
-            name={beverage.name}
-            price={beverage.price}
-            quantity={beverage.quantity}
-            number={beverage.number}
-            isSelected={beverage.number === selectedBeverageNumber}
-          />
-        ))}
+      <div className="flex gap-8 h-full">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex justify-center items-center gap-4">
+            {vendingMachine.inventory.map((beverage) => (
+              <BeverageItem
+                key={beverage.name}
+                src={
+                  beverageImages[beverage.name as keyof typeof beverageImages]
+                }
+                alt={`${beverage.name} icon`}
+                name={beverage.name}
+                price={beverage.price}
+                quantity={beverage.quantity}
+                number={beverage.number}
+                isSelected={beverage.number === selectedBeverageNumber}
+              />
+            ))}
+          </div>
+          <button className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden">
+            관리자 모드
+          </button>
+        </div>
+        <div className="flex justify-center items-center gap-4">
+          {renderStep()}
+        </div>
       </div>
-      <div>{renderStep()}</div>
     </div>
   );
 };
