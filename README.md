@@ -1,36 +1,188 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 자판기 시뮬레이터 (Vending Machine Simulator)
 
-## Getting Started
+## 프로젝트 개요
 
-First, run the development server:
+이 프로젝트는 자판기에서 사용자가 원하는 음료수를 얻기까지의 전체 과정을 웹 애플리케이션으로 구현한 시뮬레이터입니다. 현금/카드 결제, 다양한 음료 선택, 예외 상황 처리 등 실제 자판기의 동작을 최대한 반영하였습니다.
+
+---
+
+## 실행 방법
+
+### 1. 요구 사항
+
+- Node.js: `>=18.x`
+- npm: `>=9.x`
+
+### 2. 설치 및 실행
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# http://localhost:3000 접속
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 데이터 구조
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. 사용자 소유금 (UserMoney)
 
-## Learn More
+```ts
+export interface UserMoney {
+  cash: Money; // 사용자가 보유한 현금 정보
+  card: Card; // 사용자가 보유한 카드 정보
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+#### Money, Card 타입
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+export interface Money {
+  tenThousand: CurrencyUnit; // 10000원권
+  fiveThousand: CurrencyUnit; // 5000원권
+  oneThousand: CurrencyUnit; // 1000원권
+  fiveHundred: CurrencyUnit; // 500원권
+  oneHundred: CurrencyUnit; // 100원권
+  total: number; // 전체 총액
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+export interface CurrencyUnit {
+  value: number; // 화폐 단위 (예: 100, 500, ...)
+  count: number; // 보유 개수
+  total: number; // 해당 화폐의 총액 (value * count)
+}
 
-## Deploy on Vercel
+export interface Card {
+  balance: number; // 카드 잔액/한도
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. 자판기 (VendingMachine)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```ts
+export interface VendingMachine {
+  inventory: InventoryItem[]; // 자판기 내 음료 재고 목록
+  changeMoney: Money; // 자판기 내 거스름돈 보유 현황
+}
+```
+
+#### InventoryItem 타입
+
+```ts
+export interface InventoryItem {
+  name: ProductType; // 음료 이름
+  quantity: number; // 재고 수량
+  price: number; // 가격
+  number: number; // 상품 번호
+}
+```
+
+### 3. 결제수단, 화폐 단위
+
+```ts
+export type PaymentMethod = "cash" | "card"; // 결제 방식
+export type CashUnit = 100 | 500 | 1000 | 5000 | 10000; // 지원 화폐 단위
+```
+
+---
+
+## 자판기 동작 4단계
+
+### 1단계. 음료 선택
+
+- 사용자는 구매 가능한 음료(콜라, 물, 커피) 중 하나를 선택합니다.
+- 각 음료는 가격, 재고, 이미지가 표시됩니다.
+- **예외**: 재고가 0인 음료는 선택 불가.
+
+### 2단계. 결제수단 선택
+
+- 현금 또는 카드 중 결제수단을 선택합니다.
+
+### 3단계. 결제 및 투입
+
+- **현금**: 100/500/1000/5000/10000원 단위로 투입 가능. 투입 금액이 부족하면 추가 투입 필요.
+- **카드**: 카드 결제 버튼 클릭 시 즉시 결제 시도.
+- **예외**:
+  - 투입 금액이 부족할 경우 결제 불가.
+  - 현금 결제 시도 시 거스름돈이 부족하면 결제 불가 안내 메시지 및 관리자 호출 안내..
+  - 카드 잔액 부족 시 결제 불가.
+
+### 4단계. 음료 및 거스름돈 반환
+
+- 결제 성공 시 음료가 지급되고, 남은 현금은 거스름돈으로 반환됩니다.
+
+---
+
+## 현금의 흐름
+
+본 시뮬레이터는 실제 자판기의 현금 흐름을 최대한 현실적으로 구현하였습니다.
+
+### 1. 사용자 지갑 → 투입금
+
+- 사용자는 자신의 지갑에서 100/500/1000/5000/10000원 단위의 현금을 선택하여 자판기에 투입합니다.
+- 투입된 금액은 "투입금"으로 별도 관리되며, 아직 자판기 소유가 아닙니다.
+- 투입 후, 사용자의 지갑에서 해당 금액만큼 차감됩니다.
+
+### 2. 투입금 → 자판기 보유금
+
+- 사용자가 음료를 선택하고 결제를 확정하면, 투입금이 자판기 보유금으로 이동합니다.
+- 결제 확정 전에는 사용자가 투입금을 회수(취소)할 수 있습니다. 이 경우 투입금이 다시 사용자 지갑으로 반환됩니다.
+- 결제 확정 시, 투입금에서 음료 가격만큼 차감되고, 남은 금액(거스름돈)은 자판기 보유금에서 계산하여 반환됩니다.
+
+### 3. 자판기 보유금 → 거스름돈 반환
+
+- 결제 후 남은 투입금(거스름돈)은 자판기 보유금에서 반환됩니다.
+- 자판기 내 거스름돈이 부족할 경우, 결제가 거부되거나 관리자 호출 안내가 표시됩니다.
+- 반환된 거스름돈은 다시 사용자의 지갑으로 이동합니다.
+
+### 4. 현실 자판기 경험 반영
+
+- 실제 자판기처럼, 투입한 현금은 결제 확정 전까지는 "임시 보관" 상태입니다.
+- 결제 실패 또는 취소 시, 투입한 현금은 전액 반환됩니다.
+- 결제 성공 시에만 자판기 소유로 귀속되며, 거스름돈은 자판기 내 보유 현금 상황에 따라 반환됩니다.
+- 자판기 내 거스름돈이 부족하면 결제가 불가하며, 현실 자판기에서의 "거스름돈 부족" 상황을 그대로 반영합니다.
+
+이 구조를 통해 사용자는 실제 자판기와 동일한 현금 흐름과 경험을 웹에서 체험할 수 있습니다.
+
+---
+
+## 예외 및 경우의 수
+
+- **재고 부족**: 음료 선택 불가, 안내 메시지 표시
+- **투입 금액 부족**: 결제 버튼 비활성화, 안내 메시지
+- **거스름돈 부족**: 결제 불가, 안내 메시지
+- **잘못된 입력**: (예: 음수, 허용되지 않은 화폐 단위) 입력 차단 및 안내
+
+---
+
+## 기술 스택 및 버전
+
+- **Next.js**: 14.x
+- **TypeScript**: 5.x
+- **Tailwind CSS**: 3.x
+- **Zustand**: 상태 관리
+- **Zod**: 입력/데이터 검증
+- **Shadcn UI**: UI 컴포넌트
+- **Jest, React Testing Library**: 테스트
+
+---
+
+## 폴더 구조
+
+```
+src/
+  app/                # 페이지 및 주요 컴포넌트
+  contexts/           # 상태 관리(Context, Zustand)
+  lib/                # 상수, 유틸리티
+  types/              # 타입 정의
+public/               # 이미지 및 정적 파일
+```
+
+---
+
+## 기타
+
+- 관리자 페이지에서 자판기 재고/거스름돈을 관리할 수 있습니다.
+- 모든 주요 예외 상황에 대한 안내 메시지 및 UX를 제공합니다.
+
+---
