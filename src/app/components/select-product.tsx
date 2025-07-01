@@ -1,6 +1,7 @@
 "use client";
 import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
+import { ERROR_MESSAGES } from "@/lib/constants";
 import { VendingStep } from "@/types/vending-machine";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -53,12 +54,12 @@ export const SelectProduct = () => {
     );
 
     if (!selectedProduct) {
-      alert("존재하지 않는 상품입니다. 관리자에게 문의하세요.");
+      alert(ERROR_MESSAGES.PRODUCT_NOT_EXISTS);
       return;
     }
 
     if (selectedProduct.quantity === 0) {
-      alert("품절된 상품입니다. 관리자에게 문의하세요.");
+      alert(ERROR_MESSAGES.PRODUCT_OUT_OF_STOCK);
       return;
     }
 

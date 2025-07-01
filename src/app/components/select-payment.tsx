@@ -1,5 +1,6 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
+import { ERROR_MESSAGES } from "@/lib/constants";
 import { VendingStep } from "@/types/vending-machine";
 import { Button } from "./ui/button";
 
@@ -12,7 +13,7 @@ export const SelectPayment = () => {
       vendingProcess.selectProduct.selectedProductPrice;
 
     if (!selectedProductPrice) {
-      alert("상품이 선택되지 않았습니다.");
+      alert(ERROR_MESSAGES.PRODUCT_NOT_SELECTED);
       return;
     }
 
@@ -21,7 +22,7 @@ export const SelectPayment = () => {
       const cashTotal = getCashTotal();
       if (cashTotal < selectedProductPrice) {
         alert(
-          `현금이 부족합니다. 보유 현금: ${cashTotal.toLocaleString()}원, 상품 가격: ${selectedProductPrice.toLocaleString()}원`
+          ERROR_MESSAGES.CASH_INSUFFICIENT(cashTotal, selectedProductPrice)
         );
         return;
       }
@@ -32,7 +33,7 @@ export const SelectPayment = () => {
       const cardBalance = getCardBalance();
       if (cardBalance < selectedProductPrice) {
         alert(
-          `카드 잔액이 부족합니다. 카드 잔액: ${cardBalance.toLocaleString()}원, 상품 가격: ${selectedProductPrice.toLocaleString()}원`
+          ERROR_MESSAGES.CARD_INSUFFICIENT(cardBalance, selectedProductPrice)
         );
         return;
       }

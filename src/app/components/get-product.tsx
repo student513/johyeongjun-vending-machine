@@ -1,7 +1,7 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
-import { CASH_UNITS } from "@/lib/constants";
+import { CASH_UNITS, ERROR_MESSAGES } from "@/lib/constants";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
 
 export const GetProduct = () => {
@@ -45,7 +45,7 @@ export const GetProduct = () => {
     const optimalChange = calculateOptimalChange(changeAmount);
     if (!optimalChange) {
       // 거스름돈 부족 안내
-      alert("거스름돈이 부족합니다. 관리자에게 문의하세요.");
+      alert(ERROR_MESSAGES.CHANGE_INSUFFICIENT);
       return;
     }
 

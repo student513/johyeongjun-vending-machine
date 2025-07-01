@@ -2,7 +2,7 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
-import { CASH_UNITS } from "@/lib/constants";
+import { CASH_UNITS, ERROR_MESSAGES } from "@/lib/constants";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
 import { Button } from "./ui/button";
 
@@ -52,9 +52,7 @@ export const InsertPayment = () => {
             insertPayment: {},
             getProduct: {},
           });
-          alert(
-            "거스름돈이 부족합니다. 투입된 금액을 반환합니다. 관리자에게 문의하세요."
-          );
+          alert(ERROR_MESSAGES.CHANGE_INSUFFICIENT_WITH_RETURN);
           return;
         }
       }
@@ -123,7 +121,7 @@ export const InsertPayment = () => {
 
     const handleClickCardPay = () => {
       if (!canPay) {
-        alert("카드 잔액이 부족합니다.");
+        alert(ERROR_MESSAGES.CARD_BALANCE_INSUFFICIENT);
         return;
       }
       // vendingProcess 초기화 및 step 변경
