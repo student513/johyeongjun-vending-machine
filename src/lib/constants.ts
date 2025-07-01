@@ -28,19 +28,19 @@ export const CASH_KEYS = {
 // 상품 정보 정의
 export const PRODUCTS = {
   coffee: {
-    name: "커피",
+    name: "coffee",
     price: 700,
     number: 11,
     image: "/coffee.png",
   },
   coke: {
-    name: "콜라",
+    name: "coke",
     price: 1100,
     number: 12,
     image: "/coke.png",
   },
   water: {
-    name: "생수",
+    name: "water",
     price: 600,
     number: 13,
     image: "/water.png",
