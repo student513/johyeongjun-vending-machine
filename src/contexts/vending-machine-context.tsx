@@ -1,11 +1,13 @@
 "use client";
 import { useUserMoney } from "@/contexts/user-money-context";
-import { CASH_UNITS, PRODUCTS } from "@/lib/constants";
+import { CASH_UNITS, PRODUCTS, VENDING_MACHINE_CONFIG } from "@/lib/constants";
 import {
   CashUnit,
   InventoryItem,
   Money,
   VendingMachine,
+  calculateTotal,
+  getMoneyKey,
 } from "@/types/vending-machine";
 import React, { createContext, useContext, useState } from "react";
 
@@ -14,30 +16,62 @@ const initialVendingMachine: VendingMachine = {
   inventory: [
     {
       name: PRODUCTS.coffee.name,
-      quantity: 10,
+      quantity: VENDING_MACHINE_CONFIG.INITIAL_INVENTORY.coffee,
       price: PRODUCTS.coffee.price,
       number: PRODUCTS.coffee.number,
     },
     {
       name: PRODUCTS.coke.name,
-      quantity: 15,
+      quantity: VENDING_MACHINE_CONFIG.INITIAL_INVENTORY.coke,
       price: PRODUCTS.coke.price,
       number: PRODUCTS.coke.number,
     },
     {
       name: PRODUCTS.water.name,
-      quantity: 20,
+      quantity: VENDING_MACHINE_CONFIG.INITIAL_INVENTORY.water,
       price: PRODUCTS.water.price,
       number: PRODUCTS.water.number,
     },
   ],
   changeMoney: {
-    tenThousand: { value: 10000, count: 5, total: 50000 },
-    fiveThousand: { value: 5000, count: 10, total: 50000 },
-    oneThousand: { value: 1000, count: 20, total: 20000 },
-    fiveHundred: { value: 500, count: 30, total: 15000 },
-    oneHundred: { value: 100, count: 50, total: 5000 },
-    total: 140000,
+    tenThousand: {
+      value: CASH_UNITS[0].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_CHANGE.tenThousand,
+      total:
+        CASH_UNITS[0].value * VENDING_MACHINE_CONFIG.INITIAL_CHANGE.tenThousand,
+    },
+    fiveThousand: {
+      value: CASH_UNITS[1].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_CHANGE.fiveThousand,
+      total:
+        CASH_UNITS[1].value *
+        VENDING_MACHINE_CONFIG.INITIAL_CHANGE.fiveThousand,
+    },
+    oneThousand: {
+      value: CASH_UNITS[2].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_CHANGE.oneThousand,
+      total:
+        CASH_UNITS[2].value * VENDING_MACHINE_CONFIG.INITIAL_CHANGE.oneThousand,
+    },
+    fiveHundred: {
+      value: CASH_UNITS[3].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_CHANGE.fiveHundred,
+      total:
+        CASH_UNITS[3].value * VENDING_MACHINE_CONFIG.INITIAL_CHANGE.fiveHundred,
+    },
+    oneHundred: {
+      value: CASH_UNITS[4].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_CHANGE.oneHundred,
+      total:
+        CASH_UNITS[4].value * VENDING_MACHINE_CONFIG.INITIAL_CHANGE.oneHundred,
+    },
+    total: CASH_UNITS.reduce((sum, unit) => {
+      const count =
+        VENDING_MACHINE_CONFIG.INITIAL_CHANGE[
+          unit.key as keyof typeof VENDING_MACHINE_CONFIG.INITIAL_CHANGE
+        ];
+      return sum + unit.value * count;
+    }, 0),
   },
 };
 
@@ -194,7 +228,13 @@ export const VendingMachineProvider = ({
   const calculateOptimalChange = (
     amount: number
   ): Partial<Record<CashUnit, number>> | null => {
-    const changeUnits: CashUnit[] = [10000, 5000, 1000, 500, 100];
+    const changeUnits: CashUnit[] = [
+      CASH_UNITS[0].value,
+      CASH_UNITS[1].value,
+      CASH_UNITS[2].value,
+      CASH_UNITS[3].value,
+      CASH_UNITS[4].value,
+    ];
     const result: Partial<Record<CashUnit, number>> = {};
     let remainingAmount = amount;
 
@@ -211,34 +251,6 @@ export const VendingMachineProvider = ({
     }
 
     return remainingAmount === 0 ? result : null;
-  };
-
-  // 화폐 키 반환 함수
-  const getMoneyKey = (value: number): keyof Omit<Money, "total"> => {
-    switch (value) {
-      case 10000:
-        return "tenThousand";
-      case 5000:
-        return "fiveThousand";
-      case 1000:
-        return "oneThousand";
-      case 500:
-        return "fiveHundred";
-      case 100:
-        return "oneHundred";
-      default:
-        throw new Error(`Invalid currency value: ${value}`);
-    }
-  };
-
-  // 총액 계산 함수
-  const calculateTotal = (money: Omit<Money, "total">): number => {
-    return Object.values(money).reduce((sum, unit) => {
-      if (typeof unit === "object" && "total" in unit) {
-        return sum + unit.total;
-      }
-      return sum;
-    }, 0);
   };
 
   // 투입된 금액 추가

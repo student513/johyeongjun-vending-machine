@@ -1,6 +1,6 @@
 "use client";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
-import { PRODUCTS } from "@/lib/constants";
+import { CASH_VALUES, PRODUCTS } from "@/lib/constants";
 import { CashUnit } from "@/types/vending-machine";
 import { useState } from "react";
 import { MoneyInputGroup } from "./ui/money-input-group";
@@ -14,18 +14,18 @@ export default function InventoryEditor() {
     subtractChangeMoney,
   } = useVendingMachine();
 
-  // 재고 수량 상태
+  // 재고 개수 상태
   const [inventoryInputs, setInventoryInputs] = useState({
     coffee:
       vendingMachine.inventory.find(
         (item) => item.name === PRODUCTS.coffee.name
-      )?.quantity || 0,
+      )?.quantity ?? 0,
     coke:
       vendingMachine.inventory.find((item) => item.name === PRODUCTS.coke.name)
-        ?.quantity || 0,
+        ?.quantity ?? 0,
     water:
       vendingMachine.inventory.find((item) => item.name === PRODUCTS.water.name)
-        ?.quantity || 0,
+        ?.quantity ?? 0,
   });
 
   // 거스름돈 개수 상태
@@ -37,22 +37,14 @@ export default function InventoryEditor() {
     oneHundred: vendingMachine.changeMoney.oneHundred.count,
   });
 
-  // 재고 수량 업데이트
-  const handleInventoryUpdate = (productName: string, newQuantity: number) => {
-    const product = vendingMachine.inventory.find(
-      (item) => item.name === productName
-    );
-    if (product) {
-      updateProductQuantity(product.number, newQuantity);
-      setInventoryInputs((prev) => ({
-        ...prev,
-        [productName === PRODUCTS.coffee.name
-          ? "coffee"
-          : productName === PRODUCTS.coke.name
-          ? "coke"
-          : "water"]: newQuantity,
-      }));
-    }
+  // 재고 개수 업데이트
+  const handleInventoryUpdate = (productType: string, newQuantity: number) => {
+    const productNumber = PRODUCTS[productType as keyof typeof PRODUCTS].number;
+    updateProductQuantity(productNumber, newQuantity);
+    setInventoryInputs((prev) => ({
+      ...prev,
+      [productType]: newQuantity,
+    }));
   };
 
   // 거스름돈 개수 업데이트
@@ -77,15 +69,15 @@ export default function InventoryEditor() {
     value: number
   ): keyof Omit<typeof vendingMachine.changeMoney, "total"> => {
     switch (value) {
-      case 10000:
+      case CASH_VALUES.TEN_THOUSAND:
         return "tenThousand";
-      case 5000:
+      case CASH_VALUES.FIVE_THOUSAND:
         return "fiveThousand";
-      case 1000:
+      case CASH_VALUES.ONE_THOUSAND:
         return "oneThousand";
-      case 500:
+      case CASH_VALUES.FIVE_HUNDRED:
         return "fiveHundred";
-      case 100:
+      case CASH_VALUES.ONE_HUNDRED:
         return "oneHundred";
       default:
         throw new Error(`Invalid currency value: ${value}`);
@@ -113,11 +105,31 @@ export default function InventoryEditor() {
 
   // 화폐 단위 데이터
   const moneyUnits = [
-    { value: 10000, label: "10,000원", count: changeInputs.tenThousand },
-    { value: 5000, label: "5,000원", count: changeInputs.fiveThousand },
-    { value: 1000, label: "1,000원", count: changeInputs.oneThousand },
-    { value: 500, label: "500원", count: changeInputs.fiveHundred },
-    { value: 100, label: "100원", count: changeInputs.oneHundred },
+    {
+      value: CASH_VALUES.TEN_THOUSAND,
+      label: "10,000원",
+      count: changeInputs.tenThousand,
+    },
+    {
+      value: CASH_VALUES.FIVE_THOUSAND,
+      label: "5,000원",
+      count: changeInputs.fiveThousand,
+    },
+    {
+      value: CASH_VALUES.ONE_THOUSAND,
+      label: "1,000원",
+      count: changeInputs.oneThousand,
+    },
+    {
+      value: CASH_VALUES.FIVE_HUNDRED,
+      label: "500원",
+      count: changeInputs.fiveHundred,
+    },
+    {
+      value: CASH_VALUES.ONE_HUNDRED,
+      label: "100원",
+      count: changeInputs.oneHundred,
+    },
   ];
 
   return (

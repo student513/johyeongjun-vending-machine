@@ -1,6 +1,6 @@
 import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
-import { PRODUCT_IMAGES } from "@/lib/constants";
+import { PRODUCT_IMAGES, PRODUCT_NAMES } from "@/lib/constants";
 import { VendingStep } from "@/types/vending-machine";
 import Image from "next/image";
 import { GetProduct } from "./components/get-product";
@@ -45,10 +45,11 @@ const BeverageItem = ({
   </div>
 );
 
-const beverageImages = {
-  커피: PRODUCT_IMAGES.coffee,
-  콜라: PRODUCT_IMAGES.coke,
-  생수: PRODUCT_IMAGES.water,
+// 상품 이름과 이미지 매핑
+const beverageImages: Record<string, string> = {
+  [PRODUCT_NAMES.coffee]: PRODUCT_IMAGES.coffee,
+  [PRODUCT_NAMES.coke]: PRODUCT_IMAGES.coke,
+  [PRODUCT_NAMES.water]: PRODUCT_IMAGES.water,
 };
 
 export const VendingMachine = () => {
@@ -80,9 +81,7 @@ export const VendingMachine = () => {
             {getInventory().map((beverage) => (
               <BeverageItem
                 key={beverage.name}
-                src={
-                  beverageImages[beverage.name as keyof typeof beverageImages]
-                }
+                src={beverageImages[beverage.name]}
                 alt={`${beverage.name} icon`}
                 name={beverage.name}
                 price={beverage.price}

@@ -1,3 +1,5 @@
+import { CASH_VALUES, PRODUCT_NAMES } from "@/lib/constants";
+
 // 화폐 단위 타입
 export interface CurrencyUnit {
   value: number; // 화폐 가치 (100, 500, 1000, 5000, 10000)
@@ -27,11 +29,11 @@ export interface UserMoney {
 }
 
 // 음료 상품 타입
-export type ProductType = "커피" | "콜라" | "생수";
+export type ProductType = (typeof PRODUCT_NAMES)[keyof typeof PRODUCT_NAMES];
 
 // 결제수단 타입
 export type PaymentMethod = "cash" | "card";
-export type CashUnit = 100 | 500 | 1000 | 5000 | 10000;
+export type CashUnit = (typeof CASH_VALUES)[keyof typeof CASH_VALUES];
 
 // 구매 단계 Enum
 export enum VendingStep {
@@ -92,15 +94,15 @@ export interface VendingMachine {
 // 화폐 가치에 따른 키 반환 함수
 export const getMoneyKey = (value: number): keyof Omit<Money, "total"> => {
   switch (value) {
-    case 10000:
+    case CASH_VALUES.TEN_THOUSAND:
       return "tenThousand";
-    case 5000:
+    case CASH_VALUES.FIVE_THOUSAND:
       return "fiveThousand";
-    case 1000:
+    case CASH_VALUES.ONE_THOUSAND:
       return "oneThousand";
-    case 500:
+    case CASH_VALUES.FIVE_HUNDRED:
       return "fiveHundred";
-    case 100:
+    case CASH_VALUES.ONE_HUNDRED:
       return "oneHundred";
     default:
       throw new Error(`Invalid currency value: ${value}`);

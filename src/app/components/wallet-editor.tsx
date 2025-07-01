@@ -1,5 +1,6 @@
 "use client";
 import { useUserMoney } from "@/contexts/user-money-context";
+import { CASH_VALUES } from "@/lib/constants";
 import { CashUnit } from "@/types/vending-machine";
 import { useState } from "react";
 import { InputWithButton } from "./ui/input-with-button";
@@ -49,15 +50,15 @@ export default function WalletEditor() {
     value: number
   ): keyof Omit<typeof userMoney.cash, "total"> => {
     switch (value) {
-      case 10000:
+      case CASH_VALUES.TEN_THOUSAND:
         return "tenThousand";
-      case 5000:
+      case CASH_VALUES.FIVE_THOUSAND:
         return "fiveThousand";
-      case 1000:
+      case CASH_VALUES.ONE_THOUSAND:
         return "oneThousand";
-      case 500:
+      case CASH_VALUES.FIVE_HUNDRED:
         return "fiveHundred";
-      case 100:
+      case CASH_VALUES.ONE_HUNDRED:
         return "oneHundred";
       default:
         throw new Error(`Invalid currency value: ${value}`);
@@ -66,11 +67,31 @@ export default function WalletEditor() {
 
   // 화폐 단위 데이터
   const moneyUnits = [
-    { value: 10000, label: "10,000원", count: cashInputs.tenThousand },
-    { value: 5000, label: "5,000원", count: cashInputs.fiveThousand },
-    { value: 1000, label: "1,000원", count: cashInputs.oneThousand },
-    { value: 500, label: "500원", count: cashInputs.fiveHundred },
-    { value: 100, label: "100원", count: cashInputs.oneHundred },
+    {
+      value: CASH_VALUES.TEN_THOUSAND,
+      label: "10,000원",
+      count: cashInputs.tenThousand,
+    },
+    {
+      value: CASH_VALUES.FIVE_THOUSAND,
+      label: "5,000원",
+      count: cashInputs.fiveThousand,
+    },
+    {
+      value: CASH_VALUES.ONE_THOUSAND,
+      label: "1,000원",
+      count: cashInputs.oneThousand,
+    },
+    {
+      value: CASH_VALUES.FIVE_HUNDRED,
+      label: "500원",
+      count: cashInputs.fiveHundred,
+    },
+    {
+      value: CASH_VALUES.ONE_HUNDRED,
+      label: "100원",
+      count: cashInputs.oneHundred,
+    },
   ];
 
   return (

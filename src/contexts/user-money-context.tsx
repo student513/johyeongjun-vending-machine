@@ -1,18 +1,60 @@
 "use client";
-import { CashUnit, Money, UserMoney } from "@/types/vending-machine";
+import { CASH_UNITS, VENDING_MACHINE_CONFIG } from "@/lib/constants";
+import {
+  CashUnit,
+  UserMoney,
+  calculateTotal,
+  getMoneyKey,
+} from "@/types/vending-machine";
 import React, { createContext, useContext, useState } from "react";
 
 // 초기 사용자 보유금액
 const initialUserMoney: UserMoney = {
   cash: {
-    tenThousand: { value: 10000, count: 2, total: 20000 },
-    fiveThousand: { value: 5000, count: 1, total: 5000 },
-    oneThousand: { value: 1000, count: 3, total: 3000 },
-    fiveHundred: { value: 500, count: 2, total: 1000 },
-    oneHundred: { value: 100, count: 5, total: 500 },
-    total: 29500,
+    tenThousand: {
+      value: CASH_UNITS[0].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.tenThousand,
+      total:
+        CASH_UNITS[0].value *
+        VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.tenThousand,
+    },
+    fiveThousand: {
+      value: CASH_UNITS[1].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.fiveThousand,
+      total:
+        CASH_UNITS[1].value *
+        VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.fiveThousand,
+    },
+    oneThousand: {
+      value: CASH_UNITS[2].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.oneThousand,
+      total:
+        CASH_UNITS[2].value *
+        VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.oneThousand,
+    },
+    fiveHundred: {
+      value: CASH_UNITS[3].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.fiveHundred,
+      total:
+        CASH_UNITS[3].value *
+        VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.fiveHundred,
+    },
+    oneHundred: {
+      value: CASH_UNITS[4].value,
+      count: VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.oneHundred,
+      total:
+        CASH_UNITS[4].value *
+        VENDING_MACHINE_CONFIG.INITIAL_USER_CASH.oneHundred,
+    },
+    total: CASH_UNITS.reduce((sum, unit) => {
+      const count =
+        VENDING_MACHINE_CONFIG.INITIAL_USER_CASH[
+          unit.key as keyof typeof VENDING_MACHINE_CONFIG.INITIAL_USER_CASH
+        ];
+      return sum + unit.value * count;
+    }, 0),
   },
-  card: { balance: 50000 },
+  card: { balance: VENDING_MACHINE_CONFIG.INITIAL_CARD_BALANCE },
 };
 
 interface UserMoneyContextType {
@@ -112,34 +154,6 @@ export const UserMoneyProvider = ({
     }));
   };
 
-  // 화폐 키 반환 함수
-  const getMoneyKey = (value: number): keyof Omit<Money, "total"> => {
-    switch (value) {
-      case 10000:
-        return "tenThousand";
-      case 5000:
-        return "fiveThousand";
-      case 1000:
-        return "oneThousand";
-      case 500:
-        return "fiveHundred";
-      case 100:
-        return "oneHundred";
-      default:
-        throw new Error(`Invalid currency value: ${value}`);
-    }
-  };
-
-  // 총액 계산 함수
-  const calculateTotal = (money: Omit<Money, "total">): number => {
-    return Object.values(money).reduce((sum, unit) => {
-      if (typeof unit === "object" && "total" in unit) {
-        return sum + unit.total;
-      }
-      return sum;
-    }, 0);
-  };
-
   return (
     <UserMoneyContext.Provider
       value={{
@@ -158,10 +172,10 @@ export const UserMoneyProvider = ({
   );
 };
 
-export function useUserMoney() {
+export const useUserMoney = () => {
   const context = useContext(UserMoneyContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useUserMoney must be used within a UserMoneyProvider");
   }
   return context;
-}
+};
