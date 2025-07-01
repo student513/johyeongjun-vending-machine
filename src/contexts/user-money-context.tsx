@@ -28,12 +28,6 @@ interface UserMoneyContextType {
   updateCardBalance: (amount: number) => void;
   getCardBalance: () => number;
   subtractCard: (amount: number) => void;
-
-  // 전체 잔액 조회
-  getTotalBalance: () => number;
-
-  // 초기화
-  resetUserMoney: () => void;
 }
 
 const UserMoneyContext = createContext<UserMoneyContextType | undefined>(
@@ -118,16 +112,6 @@ export const UserMoneyProvider = ({
     }));
   };
 
-  // 전체 잔액 조회 (현금 + 카드)
-  const getTotalBalance = () => {
-    return userMoney.cash.total + userMoney.card.balance;
-  };
-
-  // 초기화
-  const resetUserMoney = () => {
-    setUserMoney(initialUserMoney);
-  };
-
   // 화폐 키 반환 함수
   const getMoneyKey = (value: number): keyof Omit<Money, "total"> => {
     switch (value) {
@@ -166,8 +150,6 @@ export const UserMoneyProvider = ({
         getCashTotal,
         updateCardBalance,
         getCardBalance,
-        getTotalBalance,
-        resetUserMoney,
         subtractCard,
       }}
     >

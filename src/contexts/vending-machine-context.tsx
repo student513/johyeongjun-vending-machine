@@ -31,32 +31,16 @@ interface VendingMachineContextType {
 
   // 재고 관련 함수들
   getInventory: () => InventoryItem[];
-  getProductByNumber: (number: number) => InventoryItem | undefined;
   updateProductQuantity: (productNumber: number, quantity: number) => void;
   decreaseProductQuantity: (productNumber: number) => boolean;
-  increaseProductQuantity: (productNumber: number, amount: number) => void;
-  isProductAvailable: (productNumber: number) => boolean;
 
   // 거스름돈 관련 함수들
-  getChangeMoney: () => Money;
   addChangeMoney: (value: CashUnit, count: number) => void;
   subtractChangeMoney: (value: CashUnit, count: number) => boolean;
-  getChangeTotal: () => number;
   canProvideChange: (amount: number) => boolean;
   calculateOptimalChange: (
     amount: number
   ) => Partial<Record<CashUnit, number>> | null;
-
-  // 자판기 상태 조회
-  getMachineStatus: () => {
-    totalProducts: number;
-    changeAvailable: number;
-  };
-
-  // 초기화
-  resetVendingMachine: () => void;
-  refillInventory: () => void;
-  refillChangeMoney: () => void;
 
   // 투입된 금액 관련 함수들
   insertedMoney: Money;
@@ -97,7 +81,7 @@ export const VendingMachineProvider = ({
     return vendingMachine.inventory;
   };
 
-  // 상품 번호로 상품 조회
+  // 상품 번호로 상품 조회 (내부용)
   const getProductByNumber = (number: number) => {
     return vendingMachine.inventory.find(
       (product) => product.number === number
@@ -132,29 +116,6 @@ export const VendingMachineProvider = ({
       ),
     }));
     return true;
-  };
-
-  // 상품 수량 증가 (보충 시)
-  const increaseProductQuantity = (productNumber: number, amount: number) => {
-    setVendingMachine((prev) => ({
-      ...prev,
-      inventory: prev.inventory.map((product) =>
-        product.number === productNumber
-          ? { ...product, quantity: product.quantity + amount }
-          : product
-      ),
-    }));
-  };
-
-  // 상품 구매 가능 여부 확인
-  const isProductAvailable = (productNumber: number): boolean => {
-    const product = getProductByNumber(productNumber);
-    return product ? product.quantity > 0 : false;
-  };
-
-  // 거스름돈 조회
-  const getChangeMoney = () => {
-    return vendingMachine.changeMoney;
   };
 
   // 거스름돈 추가
@@ -203,11 +164,6 @@ export const VendingMachineProvider = ({
     return true;
   };
 
-  // 거스름돈 총액 조회
-  const getChangeTotal = () => {
-    return vendingMachine.changeMoney.total;
-  };
-
   // 거스름돈 제공 가능 여부 확인
   const canProvideChange = (amount: number): boolean => {
     if (amount > vendingMachine.changeMoney.total) {
@@ -239,52 +195,6 @@ export const VendingMachineProvider = ({
     }
 
     return remainingAmount === 0 ? result : null;
-  };
-
-  // 자판기 상태 조회
-  const getMachineStatus = () => {
-    const totalProducts = vendingMachine.inventory.reduce(
-      (sum, product) => sum + product.quantity,
-      0
-    );
-    const changeAvailable = getChangeTotal();
-
-    return {
-      totalProducts,
-      changeAvailable,
-    };
-  };
-
-  // 자판기 초기화
-  const resetVendingMachine = () => {
-    setVendingMachine(initialVendingMachine);
-  };
-
-  // 재고 보충
-  const refillInventory = () => {
-    setVendingMachine((prev) => ({
-      ...prev,
-      inventory: prev.inventory.map((product) => ({
-        ...product,
-        quantity:
-          product.name === "커피" ? 10 : product.name === "콜라" ? 15 : 20,
-      })),
-    }));
-  };
-
-  // 거스름돈 보충
-  const refillChangeMoney = () => {
-    setVendingMachine((prev) => ({
-      ...prev,
-      changeMoney: {
-        tenThousand: { value: 10000, count: 5, total: 50000 },
-        fiveThousand: { value: 5000, count: 10, total: 50000 },
-        oneThousand: { value: 1000, count: 20, total: 20000 },
-        fiveHundred: { value: 500, count: 30, total: 15000 },
-        oneHundred: { value: 100, count: 50, total: 5000 },
-        total: 140000,
-      },
-    }));
   };
 
   // 화폐 키 반환 함수
@@ -382,21 +292,12 @@ export const VendingMachineProvider = ({
         vendingMachine,
         setVendingMachine,
         getInventory,
-        getProductByNumber,
         updateProductQuantity,
         decreaseProductQuantity,
-        increaseProductQuantity,
-        isProductAvailable,
-        getChangeMoney,
         addChangeMoney,
         subtractChangeMoney,
-        getChangeTotal,
         canProvideChange,
         calculateOptimalChange,
-        getMachineStatus,
-        resetVendingMachine,
-        refillInventory,
-        refillChangeMoney,
         insertedMoney,
         addInsertedMoney,
         getInsertedTotal,
