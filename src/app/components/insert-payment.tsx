@@ -5,6 +5,7 @@ import { useVendingProcess } from "@/contexts/vending-process-context";
 import { CASH_UNITS, ERROR_MESSAGES } from "@/lib/constants";
 import { getOptimalCashInsert } from "@/lib/utils";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
+import React from "react";
 import { Button } from "./ui/button";
 
 export const InsertPayment = () => {
@@ -28,6 +29,10 @@ export const InsertPayment = () => {
 
   // 투입 불가 조건
   const isOverPrice = insertedTotal >= productPrice;
+
+  // 카드 결제 관련 상태 (조건문 밖에서 선언)
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [hasError, setHasError] = React.useState(false);
 
   if (paymentMethod === "cash") {
     const handleClickInsert = (value: CashUnit) => {
@@ -161,9 +166,20 @@ export const InsertPayment = () => {
   if (paymentMethod === "card") {
     const canPay = userMoney.card.balance >= productPrice;
 
-    const handleClickCardPay = () => {
+    const handleClickCardPay = async () => {
       if (!canPay) {
         alert(ERROR_MESSAGES.CARD_BALANCE_INSUFFICIENT);
+        return;
+      }
+      setIsLoading(true);
+      setHasError(false);
+      // 3초 대기
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // 30% 확률로 실패
+      if (Math.random() < 0.3) {
+        setIsLoading(false);
+        setHasError(true);
+        alert(ERROR_MESSAGES.CARD_PAYMENT_FAILED);
         return;
       }
       // vendingProcess 초기화 및 step 변경
@@ -179,6 +195,7 @@ export const InsertPayment = () => {
           vendingProcess.selectProduct.selectedProductNumber
         );
       }
+      setIsLoading(false);
     };
 
     return (
@@ -187,15 +204,20 @@ export const InsertPayment = () => {
         <div className="mb-1">
           카드 잔액: {userMoney.card.balance.toLocaleString()}원
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           <Button
             variant="primary"
-            disabled={!canPay}
+            disabled={!canPay || isLoading}
             onClick={handleClickCardPay}
           >
-            결제
+            {isLoading ? "결제 중..." : "결제"}
           </Button>
         </div>
+        {hasError && (
+          <div className="text-red-500 text-sm mt-2">
+            {ERROR_MESSAGES.CARD_PAYMENT_FAILED}
+          </div>
+        )}
       </div>
     );
   }

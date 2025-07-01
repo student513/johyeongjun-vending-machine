@@ -126,6 +126,7 @@ export const ERROR_MESSAGES = {
   CARD_INSUFFICIENT: (cardBalance: number, productPrice: number) =>
     `카드 잔액이 부족합니다. 카드 잔액: ${cardBalance.toLocaleString()}원, 상품 가격: ${productPrice.toLocaleString()}원`,
   CARD_BALANCE_INSUFFICIENT: "카드 잔액이 부족합니다.",
+  CARD_PAYMENT_FAILED: "카드 결제에 실패했습니다. 다시 시도해주세요.",
 
   // 거스름돈 관련
   CHANGE_INSUFFICIENT: "거스름돈이 부족합니다. 관리자에게 문의하세요.",
