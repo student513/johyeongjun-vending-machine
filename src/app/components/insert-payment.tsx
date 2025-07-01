@@ -6,9 +6,14 @@ import { CashUnit, VendingStep } from "@/types/vending-machine";
 
 export const InsertPayment = () => {
   const { userMoney, subtractCash, subtractCard } = useUserMoney();
-  const { addInsertedMoney, getInsertedTotal } = useVendingMachine();
+  const {
+    addInsertedMoney,
+    getInsertedTotal,
+    returnInsertedMoney,
+    decreaseProductQuantity,
+  } = useVendingMachine();
   const { vendingProcess, setVendingProcess } = useVendingProcess();
-  const { returnInsertedMoney, decreaseProductQuantity } = useVendingMachine();
+  const { canProvideChange } = useVendingMachine();
   const paymentMethod = vendingProcess.selectPayment.paymentMethod;
 
   // 선택된 상품의 가격
@@ -37,12 +42,37 @@ export const InsertPayment = () => {
     };
 
     const handleClickCashPay = () => {
+      // 거스름돈 계산
+      const changeAmount = insertedTotal - productPrice;
+
+      // 거스름돈이 필요한 경우 (투입된 금액이 상품 가격보다 많을 때)
+      if (changeAmount > 0) {
+        // 자판기에서 거스름돈을 제공할 수 있는지 확인
+        if (!canProvideChange(changeAmount)) {
+          // 거스름돈이 부족한 경우 투입된 돈을 반환하고 프로세스 초기화
+          returnInsertedMoney();
+          setVendingProcess({
+            step: VendingStep.SELECT_PRODUCT,
+            selectProduct: {},
+            selectPayment: {},
+            insertPayment: {},
+            getProduct: {},
+          });
+          alert(
+            "거스름돈이 부족합니다. 투입된 금액을 반환합니다. 관리자에게 문의하세요."
+          );
+          return;
+        }
+      }
+
+      // 거스름돈이 충분하거나 필요없는 경우 정상 결제 진행
       // 상품 수량 감소
       if (vendingProcess.selectProduct.selectedProductNumber) {
         decreaseProductQuantity(
           vendingProcess.selectProduct.selectedProductNumber
         );
       }
+
       // 다음 단계 진입
       setVendingProcess({
         ...vendingProcess,

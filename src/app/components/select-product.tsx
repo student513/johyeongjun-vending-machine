@@ -52,7 +52,12 @@ export const SelectProduct = () => {
     );
 
     if (!selectedProduct) {
-      alert("존재하지 않는 상품입니다.");
+      alert("존재하지 않는 상품입니다. 관리자에게 문의하세요.");
+      return;
+    }
+
+    if (selectedProduct.quantity === 0) {
+      alert("품절된 상품입니다. 관리자에게 문의하세요.");
       return;
     }
 

@@ -36,7 +36,11 @@ const BeverageItem = ({
       {number}.{name}
     </div>
     <div className="text-sm text-gray-600">{price.toLocaleString()}원</div>
-    <div className="text-xs text-gray-500">재고: {quantity}개</div>
+    <div
+      className={`text-xs ${quantity === 0 ? "text-red-500" : "text-gray-500"}`}
+    >
+      재고: {quantity}개
+    </div>
   </div>
 );
 
