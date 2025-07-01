@@ -2,7 +2,8 @@
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { CashUnit } from "@/types/vending-machine";
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { MoneyInputGroup } from "./ui/money-input-group";
+import { ProductInputGroup } from "./ui/product-input-group";
 
 export default function InventoryEditor() {
   const {
@@ -58,10 +59,8 @@ export default function InventoryEditor() {
     const difference = newCount - currentCount;
 
     if (difference > 0) {
-      // 추가
       addChangeMoney(value as CashUnit, difference);
     } else if (difference < 0) {
-      // 차감
       subtractChangeMoney(value as CashUnit, Math.abs(difference));
     }
 
@@ -91,249 +90,44 @@ export default function InventoryEditor() {
     }
   };
 
+  // 제품 데이터
+  const products = [
+    { name: "커피", price: 700, quantity: inventoryInputs.coffee },
+    { name: "콜라", price: 1100, quantity: inventoryInputs.coke },
+    { name: "생수", price: 600, quantity: inventoryInputs.water },
+  ];
+
+  // 화폐 단위 데이터
+  const moneyUnits = [
+    { value: 10000, label: "10,000원", count: changeInputs.tenThousand },
+    { value: 5000, label: "5,000원", count: changeInputs.fiveThousand },
+    { value: 1000, label: "1,000원", count: changeInputs.oneThousand },
+    { value: 500, label: "500원", count: changeInputs.fiveHundred },
+    { value: 100, label: "100원", count: changeInputs.oneHundred },
+  ];
+
   return (
     <div className="w-full max-w-7xl p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-xl font-bold mb-6 text-gray-800">자판기 재고 관리</h2>
+
       {/* 음료 재고 관리 */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-4 text-gray-700">음료 재고</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* 커피 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">
-              커피 (700원)
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={inventoryInputs.coffee}
-                onChange={(e) =>
-                  setInventoryInputs((prev) => ({
-                    ...prev,
-                    coffee: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="action"
-                size="md"
-                onClick={() =>
-                  handleInventoryUpdate("커피", inventoryInputs.coffee)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-
-          {/* 콜라 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">
-              콜라 (1,100원)
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={inventoryInputs.coke}
-                onChange={(e) =>
-                  setInventoryInputs((prev) => ({
-                    ...prev,
-                    coke: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="action"
-                size="md"
-                onClick={() =>
-                  handleInventoryUpdate("콜라", inventoryInputs.coke)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-
-          {/* 생수 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">
-              생수 (600원)
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={inventoryInputs.water}
-                onChange={(e) =>
-                  setInventoryInputs((prev) => ({
-                    ...prev,
-                    water: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="action"
-                size="md"
-                onClick={() =>
-                  handleInventoryUpdate("생수", inventoryInputs.water)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ProductInputGroup
+          products={products}
+          onUpdate={handleInventoryUpdate}
+          buttonVariant="action"
+        />
       </div>
 
       {/* 거스름돈 관리 */}
       <div>
         <h3 className="text-lg font-semibold mb-4 text-gray-700">거스름돈</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {/* 10,000원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">
-              10,000원
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={changeInputs.tenThousand}
-                onChange={(e) =>
-                  setChangeInputs((prev) => ({
-                    ...prev,
-                    tenThousand: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="success"
-                size="md"
-                onClick={() =>
-                  handleChangeUpdate(10000, changeInputs.tenThousand)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-
-          {/* 5,000원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">5,000원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={changeInputs.fiveThousand}
-                onChange={(e) =>
-                  setChangeInputs((prev) => ({
-                    ...prev,
-                    fiveThousand: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="success"
-                size="md"
-                onClick={() =>
-                  handleChangeUpdate(5000, changeInputs.fiveThousand)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-
-          {/* 1,000원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">1,000원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={changeInputs.oneThousand}
-                onChange={(e) =>
-                  setChangeInputs((prev) => ({
-                    ...prev,
-                    oneThousand: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="success"
-                size="md"
-                onClick={() =>
-                  handleChangeUpdate(1000, changeInputs.oneThousand)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-
-          {/* 500원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">500원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={changeInputs.fiveHundred}
-                onChange={(e) =>
-                  setChangeInputs((prev) => ({
-                    ...prev,
-                    fiveHundred: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="success"
-                size="md"
-                onClick={() =>
-                  handleChangeUpdate(500, changeInputs.fiveHundred)
-                }
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-
-          {/* 100원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">100원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={changeInputs.oneHundred}
-                onChange={(e) =>
-                  setChangeInputs((prev) => ({
-                    ...prev,
-                    oneHundred: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button
-                variant="success"
-                size="md"
-                onClick={() => handleChangeUpdate(100, changeInputs.oneHundred)}
-              >
-                수정
-              </Button>
-            </div>
-          </div>
-        </div>
+        <MoneyInputGroup
+          moneyUnits={moneyUnits}
+          onUpdate={handleChangeUpdate}
+          buttonVariant="success"
+        />
       </div>
     </div>
   );

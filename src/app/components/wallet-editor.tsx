@@ -2,6 +2,8 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { CashUnit } from "@/types/vending-machine";
 import { useState } from "react";
+import { InputWithButton } from "./ui/input-with-button";
+import { MoneyInputGroup } from "./ui/money-input-group";
 
 export default function WalletEditor() {
   const { userMoney, addCash, subtractCash, updateCardBalance } =
@@ -25,10 +27,8 @@ export default function WalletEditor() {
     const difference = newCount - currentCount;
 
     if (difference > 0) {
-      // 추가
       addCash(value as CashUnit, difference);
     } else if (difference < 0) {
-      // 차감
       subtractCash(value as CashUnit, Math.abs(difference));
     }
 
@@ -64,6 +64,15 @@ export default function WalletEditor() {
     }
   };
 
+  // 화폐 단위 데이터
+  const moneyUnits = [
+    { value: 10000, label: "10,000원", count: cashInputs.tenThousand },
+    { value: 5000, label: "5,000원", count: cashInputs.fiveThousand },
+    { value: 1000, label: "1,000원", count: cashInputs.oneThousand },
+    { value: 500, label: "500원", count: cashInputs.fiveHundred },
+    { value: 100, label: "100원", count: cashInputs.oneHundred },
+  ];
+
   return (
     <div className="w-full max-w-7xl p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-xl font-bold mb-6 text-gray-800">사용자 지갑 관리</h2>
@@ -71,134 +80,11 @@ export default function WalletEditor() {
       {/* 현금 관리 */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-4 text-gray-700">보유 현금</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {/* 10,000원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">
-              10,000원
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={cashInputs.tenThousand}
-                onChange={(e) =>
-                  setCashInputs((prev) => ({
-                    ...prev,
-                    tenThousand: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={() => handleCashUpdate(10000, cashInputs.tenThousand)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                수정
-              </button>
-            </div>
-          </div>
-
-          {/* 5,000원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">5,000원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={cashInputs.fiveThousand}
-                onChange={(e) =>
-                  setCashInputs((prev) => ({
-                    ...prev,
-                    fiveThousand: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={() => handleCashUpdate(5000, cashInputs.fiveThousand)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                수정
-              </button>
-            </div>
-          </div>
-
-          {/* 1,000원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">1,000원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={cashInputs.oneThousand}
-                onChange={(e) =>
-                  setCashInputs((prev) => ({
-                    ...prev,
-                    oneThousand: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={() => handleCashUpdate(1000, cashInputs.oneThousand)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                수정
-              </button>
-            </div>
-          </div>
-
-          {/* 500원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">500원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={cashInputs.fiveHundred}
-                onChange={(e) =>
-                  setCashInputs((prev) => ({
-                    ...prev,
-                    fiveHundred: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={() => handleCashUpdate(500, cashInputs.fiveHundred)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                수정
-              </button>
-            </div>
-          </div>
-
-          {/* 100원 */}
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">100원</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={cashInputs.oneHundred}
-                onChange={(e) =>
-                  setCashInputs((prev) => ({
-                    ...prev,
-                    oneHundred: parseInt(e.target.value) || 0,
-                  }))
-                }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={() => handleCashUpdate(100, cashInputs.oneHundred)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                수정
-              </button>
-            </div>
-          </div>
-        </div>
+        <MoneyInputGroup
+          moneyUnits={moneyUnits}
+          onUpdate={handleCashUpdate}
+          buttonVariant="action"
+        />
 
         {/* 현금 총액 표시 */}
         <div className="mt-4 p-3 bg-gray-50 rounded-md">
@@ -215,26 +101,14 @@ export default function WalletEditor() {
       <div>
         <h3 className="text-lg font-semibold mb-4 text-gray-700">카드 잔고</h3>
         <div className="max-w-md">
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium text-gray-600">
-              카드 잔고 (원)
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                value={cardBalance}
-                onChange={(e) => setCardBalance(parseInt(e.target.value) || 0)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={handleCardBalanceUpdate}
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                수정
-              </button>
-            </div>
-          </div>
+          <InputWithButton
+            label="카드 잔고 (원)"
+            value={cardBalance}
+            onChange={setCardBalance}
+            onButtonClick={handleCardBalanceUpdate}
+            buttonText="수정"
+            buttonVariant="success"
+          />
         </div>
 
         {/* 카드 잔고 표시 */}
