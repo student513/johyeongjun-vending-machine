@@ -8,6 +8,7 @@ import { InsertPayment } from "./components/insert-payment";
 import { SelectPayment } from "./components/select-payment";
 import { SelectProduct } from "./components/select-product";
 import { StepIndicator } from "./components/step-indicator";
+import { Button } from "./components/ui/button";
 
 interface BeverageItemProps {
   src: string;
@@ -53,8 +54,8 @@ const beverageImages: Record<string, string> = {
 };
 
 export const VendingMachine = () => {
-  const { vendingProcess } = useVendingProcess();
-  const { getInventory } = useVendingMachine();
+  const { vendingProcess, setVendingProcess } = useVendingProcess();
+  const { getInventory, returnInsertedMoney } = useVendingMachine();
 
   const selectedBeverageNumber =
     vendingProcess.selectProduct.selectedProductNumber;
@@ -72,24 +73,47 @@ export const VendingMachine = () => {
     }
   };
 
+  const resetVendingProcess = () => {
+    setVendingProcess({
+      step: VendingStep.SELECT_PRODUCT,
+      selectProduct: {},
+      selectPayment: {},
+      insertPayment: {},
+      getProduct: {},
+    });
+    returnInsertedMoney();
+  };
+
   return (
     <div className="flex flex-col items-center gap-4 h-screen">
       <StepIndicator />
       <div className="flex gap-8 h-full">
         <div className="flex flex-col items-center justify-center gap-4">
-          <div className="flex justify-center items-center gap-4">
-            {getInventory().map((beverage) => (
-              <BeverageItem
-                key={beverage.name}
-                src={beverageImages[beverage.name]}
-                alt={`${beverage.name} icon`}
-                name={beverage.name}
-                price={beverage.price}
-                quantity={beverage.quantity}
-                number={beverage.number}
-                isSelected={beverage.number === selectedBeverageNumber}
-              />
-            ))}
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="flex justify-center items-center gap-4">
+              {getInventory().map((beverage) => (
+                <BeverageItem
+                  key={beverage.name}
+                  src={beverageImages[beverage.name]}
+                  alt={`${beverage.name} icon`}
+                  name={beverage.name}
+                  price={beverage.price}
+                  quantity={beverage.quantity}
+                  number={beverage.number}
+                  isSelected={beverage.number === selectedBeverageNumber}
+                />
+              ))}
+            </div>
+            {vendingProcess.step !== VendingStep.GET_PRODUCT && (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  resetVendingProcess();
+                }}
+              >
+                초기화
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex justify-center items-center gap-4">
