@@ -1,5 +1,6 @@
 "use client";
 import { useUserMoney } from "@/contexts/user-money-context";
+import { CASH_UNITS, PRODUCTS } from "@/lib/constants";
 import {
   CashUnit,
   InventoryItem,
@@ -11,9 +12,24 @@ import React, { createContext, useContext, useState } from "react";
 // 초기 자판기 상태
 const initialVendingMachine: VendingMachine = {
   inventory: [
-    { name: "커피", quantity: 10, price: 700, number: 11 },
-    { name: "콜라", quantity: 15, price: 1100, number: 12 },
-    { name: "생수", quantity: 20, price: 600, number: 13 },
+    {
+      name: PRODUCTS.coffee.name,
+      quantity: 10,
+      price: PRODUCTS.coffee.price,
+      number: PRODUCTS.coffee.number,
+    },
+    {
+      name: PRODUCTS.coke.name,
+      quantity: 15,
+      price: PRODUCTS.coke.price,
+      number: PRODUCTS.coke.number,
+    },
+    {
+      name: PRODUCTS.water.name,
+      quantity: 20,
+      price: PRODUCTS.water.price,
+      number: PRODUCTS.water.number,
+    },
   ],
   changeMoney: {
     tenThousand: { value: 10000, count: 5, total: 50000 },
@@ -250,15 +266,7 @@ export const VendingMachineProvider = ({
   // 투입된 금액 초기화 및 환불
   const returnInsertedMoney = () => {
     // insertedMoney의 각 화폐 단위별로 addCash 호출
-    (
-      [
-        { key: "tenThousand", value: 10000 },
-        { key: "fiveThousand", value: 5000 },
-        { key: "oneThousand", value: 1000 },
-        { key: "fiveHundred", value: 500 },
-        { key: "oneHundred", value: 100 },
-      ] as const
-    ).forEach((unit) => {
+    CASH_UNITS.forEach((unit) => {
       const count = insertedMoney[unit.key].count;
       if (count > 0) {
         addCash(unit.value, count);

@@ -1,5 +1,6 @@
 import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
+import { PRODUCT_IMAGES } from "@/lib/constants";
 import { VendingStep } from "@/types/vending-machine";
 import Image from "next/image";
 import { GetProduct } from "./components/get-product";
@@ -45,9 +46,9 @@ const BeverageItem = ({
 );
 
 const beverageImages = {
-  커피: "/coffee.png",
-  콜라: "/coke.png",
-  생수: "/water.png",
+  커피: PRODUCT_IMAGES.coffee,
+  콜라: PRODUCT_IMAGES.coke,
+  생수: PRODUCT_IMAGES.water,
 };
 
 export const VendingMachine = () => {

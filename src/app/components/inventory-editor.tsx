@@ -1,5 +1,6 @@
 "use client";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
+import { PRODUCTS } from "@/lib/constants";
 import { CashUnit } from "@/types/vending-machine";
 import { useState } from "react";
 import { MoneyInputGroup } from "./ui/money-input-group";
@@ -16,14 +17,15 @@ export default function InventoryEditor() {
   // 재고 수량 상태
   const [inventoryInputs, setInventoryInputs] = useState({
     coffee:
-      vendingMachine.inventory.find((item) => item.name === "커피")?.quantity ||
-      0,
+      vendingMachine.inventory.find(
+        (item) => item.name === PRODUCTS.coffee.name
+      )?.quantity || 0,
     coke:
-      vendingMachine.inventory.find((item) => item.name === "콜라")?.quantity ||
-      0,
+      vendingMachine.inventory.find((item) => item.name === PRODUCTS.coke.name)
+        ?.quantity || 0,
     water:
-      vendingMachine.inventory.find((item) => item.name === "생수")?.quantity ||
-      0,
+      vendingMachine.inventory.find((item) => item.name === PRODUCTS.water.name)
+        ?.quantity || 0,
   });
 
   // 거스름돈 개수 상태
@@ -44,9 +46,9 @@ export default function InventoryEditor() {
       updateProductQuantity(product.number, newQuantity);
       setInventoryInputs((prev) => ({
         ...prev,
-        [productName === "커피"
+        [productName === PRODUCTS.coffee.name
           ? "coffee"
-          : productName === "콜라"
+          : productName === PRODUCTS.coke.name
           ? "coke"
           : "water"]: newQuantity,
       }));
@@ -92,9 +94,21 @@ export default function InventoryEditor() {
 
   // 제품 데이터
   const products = [
-    { name: "커피", price: 700, quantity: inventoryInputs.coffee },
-    { name: "콜라", price: 1100, quantity: inventoryInputs.coke },
-    { name: "생수", price: 600, quantity: inventoryInputs.water },
+    {
+      name: PRODUCTS.coffee.name,
+      price: PRODUCTS.coffee.price,
+      quantity: inventoryInputs.coffee,
+    },
+    {
+      name: PRODUCTS.coke.name,
+      price: PRODUCTS.coke.price,
+      quantity: inventoryInputs.coke,
+    },
+    {
+      name: PRODUCTS.water.name,
+      price: PRODUCTS.water.price,
+      quantity: inventoryInputs.water,
+    },
   ];
 
   // 화폐 단위 데이터

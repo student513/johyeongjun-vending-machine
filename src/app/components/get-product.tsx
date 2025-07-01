@@ -1,6 +1,7 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
+import { CASH_UNITS } from "@/lib/constants";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
 
 export const GetProduct = () => {
@@ -49,15 +50,7 @@ export const GetProduct = () => {
     }
 
     // 투입된 금액을 자판기의 거스름돈에 추가
-    const cashUnits = [
-      { key: "tenThousand", value: 10000 },
-      { key: "fiveThousand", value: 5000 },
-      { key: "oneThousand", value: 1000 },
-      { key: "fiveHundred", value: 500 },
-      { key: "oneHundred", value: 100 },
-    ] as const;
-
-    cashUnits.forEach((unit) => {
+    CASH_UNITS.forEach((unit) => {
       const count = insertedMoney[unit.key].count;
       if (count > 0) {
         addChangeMoney(unit.value as CashUnit, count);

@@ -2,6 +2,7 @@
 import { useUserMoney } from "@/contexts/user-money-context";
 import { useVendingMachine } from "@/contexts/vending-machine-context";
 import { useVendingProcess } from "@/contexts/vending-process-context";
+import { CASH_UNITS } from "@/lib/constants";
 import { CashUnit, VendingStep } from "@/types/vending-machine";
 import { Button } from "./ui/button";
 
@@ -28,14 +29,6 @@ export const InsertPayment = () => {
   const isOverPrice = insertedTotal >= productPrice;
 
   if (paymentMethod === "cash") {
-    const cashUnits = [
-      { key: "tenThousand", value: 10000 },
-      { key: "fiveThousand", value: 5000 },
-      { key: "oneThousand", value: 1000 },
-      { key: "fiveHundred", value: 500 },
-      { key: "oneHundred", value: 100 },
-    ] as const;
-
     const handleClickInsert = (value: CashUnit) => {
       // 사용자의 현금 차감 및 자판기의 투입된 금액 증가
       subtractCash(value, 1);
@@ -88,7 +81,7 @@ export const InsertPayment = () => {
         </div>
         <div className="mb-2">내 지갑</div>
         <div className="flex flex-col gap-2">
-          {cashUnits.map((unit) => (
+          {CASH_UNITS.map((unit) => (
             <div key={unit.value} className="flex items-center gap-2">
               <span>
                 {unit.value}원 x {userMoney.cash[unit.key].count}
