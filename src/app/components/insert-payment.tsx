@@ -6,13 +6,7 @@ import { CashUnit, VendingStep } from "@/types/vending-machine";
 
 export const InsertPayment = () => {
   const { userMoney, subtractCash, subtractCard } = useUserMoney();
-  const {
-    addInsertedMoney,
-    getInsertedTotal,
-    addChangeMoney,
-    resetInsertedMoney,
-    insertedMoney,
-  } = useVendingMachine();
+  const { addInsertedMoney, getInsertedTotal } = useVendingMachine();
   const { vendingProcess, setVendingProcess } = useVendingProcess();
   const { returnInsertedMoney, decreaseProductQuantity } = useVendingMachine();
   const paymentMethod = vendingProcess.selectPayment.paymentMethod;
@@ -37,41 +31,23 @@ export const InsertPayment = () => {
     ] as const;
 
     const handleClickInsert = (value: CashUnit) => {
+      // 사용자의 현금 차감 및 자판기의 투입된 금액 증가
       subtractCash(value, 1);
       addInsertedMoney(value, 1);
     };
 
     const handleClickCashPay = () => {
-      // 투입된 금액을 자판기의 거스름돈에 추가
-      const cashUnits = [
-        { key: "tenThousand", value: 10000 },
-        { key: "fiveThousand", value: 5000 },
-        { key: "oneThousand", value: 1000 },
-        { key: "fiveHundred", value: 500 },
-        { key: "oneHundred", value: 100 },
-      ] as const;
-
-      cashUnits.forEach((unit) => {
-        const count = insertedMoney[unit.key].count;
-        if (count > 0) {
-          addChangeMoney(unit.value as CashUnit, count);
-        }
-      });
-
-      // 투입된 금액 초기화
-      resetInsertedMoney();
-
-      // 다음 단계 진입
-      setVendingProcess({
-        ...vendingProcess,
-        step: VendingStep.GET_PRODUCT,
-      });
       // 상품 수량 감소
       if (vendingProcess.selectProduct.selectedProductNumber) {
         decreaseProductQuantity(
           vendingProcess.selectProduct.selectedProductNumber
         );
       }
+      // 다음 단계 진입
+      setVendingProcess({
+        ...vendingProcess,
+        step: VendingStep.GET_PRODUCT,
+      });
     };
     return (
       <div className="flex flex-col items-center gap-4">
@@ -124,14 +100,18 @@ export const InsertPayment = () => {
     const canPay = userMoney.card.balance >= productPrice;
 
     const handleClickCardPay = () => {
-      if (!canPay) return;
-      // 카드 잔액 차감
-      subtractCard(productPrice);
+      if (!canPay) {
+        alert("카드 잔액이 부족합니다.");
+        return;
+      }
       // vendingProcess 초기화 및 step 변경
       setVendingProcess({
         ...vendingProcess,
         step: VendingStep.GET_PRODUCT,
       });
+      // 카드 잔액 차감
+      subtractCard(productPrice);
+      // 상품 수량 감소
       if (vendingProcess.selectProduct.selectedProductNumber) {
         decreaseProductQuantity(
           vendingProcess.selectProduct.selectedProductNumber

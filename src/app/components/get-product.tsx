@@ -9,6 +9,8 @@ export const GetProduct = () => {
     calculateOptimalChange,
     subtractChangeMoney,
     resetInsertedMoney,
+    insertedMoney,
+    addChangeMoney,
   } = useVendingMachine();
   const { addCash } = useUserMoney();
   const { vendingProcess, setVendingProcess } = useVendingProcess();
@@ -29,8 +31,15 @@ export const GetProduct = () => {
   };
 
   const handleReceiveChange = () => {
-    const changeAmount = getInsertedTotal();
-    if (changeAmount === 0) return; // 반환할 잔돈 없음
+    const changeAmount =
+      getInsertedTotal() -
+      (vendingProcess.selectProduct.selectedProductPrice ?? 0);
+    if (changeAmount <= 0) {
+      // 거스름돈이 없거나 음수인 경우 (카드 결제 등)
+      resetInsertedMoney();
+      resetVendingProcess();
+      return;
+    }
 
     const optimalChange = calculateOptimalChange(changeAmount);
     if (!optimalChange) {
@@ -39,7 +48,26 @@ export const GetProduct = () => {
       return;
     }
 
-    // 각 화폐 단위별로 처리
+    // 투입된 금액을 자판기의 거스름돈에 추가
+    const cashUnits = [
+      { key: "tenThousand", value: 10000 },
+      { key: "fiveThousand", value: 5000 },
+      { key: "oneThousand", value: 1000 },
+      { key: "fiveHundred", value: 500 },
+      { key: "oneHundred", value: 100 },
+    ] as const;
+
+    cashUnits.forEach((unit) => {
+      const count = insertedMoney[unit.key].count;
+      if (count > 0) {
+        addChangeMoney(unit.value as CashUnit, count);
+      }
+    });
+
+    // 투입된 금액 초기화
+    resetInsertedMoney();
+
+    // 거스름돈을 지갑에 추가
     Object.entries(optimalChange).forEach(([unit, count]) => {
       if (count > 0) {
         subtractChangeMoney(Number(unit) as CashUnit, count);
@@ -47,7 +75,6 @@ export const GetProduct = () => {
       }
     });
 
-    resetInsertedMoney(); // 투입 금액 초기화
     resetVendingProcess();
   };
 
@@ -79,10 +106,7 @@ export const GetProduct = () => {
       ) : (
         <button
           className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() => {
-            resetVendingProcess();
-            resetInsertedMoney();
-          }}
+          onClick={handleReceiveChange}
         >
           돌아가기
         </button>
