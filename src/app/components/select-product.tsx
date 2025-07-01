@@ -2,6 +2,7 @@
 import { useVendingMachine } from "@/contexts";
 import { useVendingProcess } from "@/contexts/vending-process-context";
 import { VendingStep } from "@/types/vending-machine";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export const SelectProduct = () => {
@@ -9,6 +10,7 @@ export const SelectProduct = () => {
   const { vendingMachine } = useVendingMachine();
   const [productNumber, setProductNumber] = useState<number | undefined>();
   const [inputValue, setInputValue] = useState<string>("");
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -80,6 +82,10 @@ export const SelectProduct = () => {
     setProductNumber(undefined);
   };
 
+  const handleAdminMode = () => {
+    router.push("/admin");
+  };
+
   return (
     <div className="flex flex-col items-center gap-4">
       <div>구매하실 상품의 번호를 입력해주세요.</div>
@@ -105,6 +111,12 @@ export const SelectProduct = () => {
           취소
         </button>
       </div>
+      <button
+        className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden"
+        onClick={handleAdminMode}
+      >
+        관리자 모드
+      </button>
     </div>
   );
 };
